@@ -25,6 +25,7 @@ class Decision extends Model
         ];
     }
 
+    // logAll(): pri pridaní citlivého stĺpca do modelu prehodnoť explicitný logOnly([...])
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()->logAll()->logOnlyDirty();

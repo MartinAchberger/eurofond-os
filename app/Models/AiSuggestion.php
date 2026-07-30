@@ -18,7 +18,7 @@ class AiSuggestion extends Model
     protected $guarded = [];
 
     protected $attributes = [
-        'status' => 'navrhnute',
+        'status' => AiSuggestionStatus::Navrhnute->value,
     ];
 
     protected function casts(): array

@@ -21,9 +21,10 @@ class DocumentVersion extends Model
     protected $guarded = [];
 
     protected $attributes = [
-        'status' => 'nepotvrdena',
+        'status' => DocumentVersionStatus::Nepotvrdena->value,
     ];
 
+    // logAll(): pri pridaní citlivého stĺpca do modelu prehodnoť explicitný logOnly([...])
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()->logAll()->logOnlyDirty();

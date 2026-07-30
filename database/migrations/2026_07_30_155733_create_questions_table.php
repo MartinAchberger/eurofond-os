@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\QuestionStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -21,7 +22,7 @@ return new class extends Migration
             $table->text('reason')->nullable();
             $table->text('body');
             $table->date('due_at')->nullable();
-            $table->string('status')->default('otvorena');
+            $table->string('status')->default(QuestionStatus::Otvorena->value);
             $table->foreignId('created_by')->constrained('users');
             $table->timestamps();
         });

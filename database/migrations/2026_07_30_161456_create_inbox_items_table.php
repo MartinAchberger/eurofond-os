@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\InboxItemStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -16,7 +17,7 @@ return new class extends Migration
             $table->string('source');
             $table->text('raw_content');
             $table->string('file_path')->nullable();
-            $table->string('status')->default('nove');
+            $table->string('status')->default(InboxItemStatus::Nove->value);
             $table->foreignId('suggested_project_id')->nullable()->constrained('projects')->nullOnDelete();
             $table->string('suggested_type')->nullable();
             $table->date('suggested_deadline')->nullable();

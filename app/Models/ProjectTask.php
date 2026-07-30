@@ -22,10 +22,11 @@ class ProjectTask extends Model
     protected $guarded = [];
 
     protected $attributes = [
-        'priority' => 'stredna',
-        'status' => 'otvorena',
+        'priority' => TaskPriority::Stredna->value,
+        'status' => TaskStatus::Otvorena->value,
     ];
 
+    // logAll(): pri pridaní citlivého stĺpca do modelu prehodnoť explicitný logOnly([...])
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()->logAll()->logOnlyDirty();

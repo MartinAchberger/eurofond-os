@@ -17,7 +17,7 @@ class Question extends Model
     protected $guarded = [];
 
     protected $attributes = [
-        'status' => 'otvorena',
+        'status' => QuestionStatus::Otvorena->value,
     ];
 
     protected function casts(): array

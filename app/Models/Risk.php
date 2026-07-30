@@ -17,7 +17,7 @@ class Risk extends Model
     protected $guarded = [];
 
     protected $attributes = [
-        'status' => 'otvorene',
+        'status' => RiskStatus::Otvorene->value,
     ];
 
     protected function casts(): array

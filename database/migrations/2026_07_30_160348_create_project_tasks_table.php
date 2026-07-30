@@ -1,5 +1,7 @@
 <?php
 
+use App\Enums\TaskPriority;
+use App\Enums\TaskStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -17,9 +19,9 @@ return new class extends Migration
             $table->string('title');
             $table->text('note')->nullable();
             $table->foreignId('assignee_id')->nullable()->constrained('users')->nullOnDelete();
-            $table->string('priority')->default('stredna');
+            $table->string('priority')->default(TaskPriority::Stredna->value);
             $table->date('due_at')->nullable();
-            $table->string('status')->default('otvorena');
+            $table->string('status')->default(TaskStatus::Otvorena->value);
             $table->text('required_evidence')->nullable();
             $table->foreignId('evidence_document_version_id')->nullable()->constrained('document_versions')->nullOnDelete();
             $table->text('evidence_note')->nullable();

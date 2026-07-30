@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\DocumentVersionStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,7 +19,7 @@ return new class extends Migration
             $table->string('file_path')->nullable();
             $table->date('issued_at')->nullable();
             $table->string('author')->nullable();
-            $table->string('status')->default('nepotvrdena');
+            $table->string('status')->default(DocumentVersionStatus::Nepotvrdena->value);
             $table->foreignId('confirmed_by')->nullable()->constrained('users');
             $table->timestamp('confirmed_at')->nullable();
             $table->foreignId('uploaded_by')->constrained('users');

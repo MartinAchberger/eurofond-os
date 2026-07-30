@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\GateStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -16,7 +17,7 @@ return new class extends Migration
             $table->foreignId('project_id')->constrained()->cascadeOnDelete();
             $table->unsignedTinyInteger('phase');
             $table->string('name');
-            $table->string('status')->default('cakajuca');
+            $table->string('status')->default(GateStatus::Cakajuca->value);
             $table->foreignId('checked_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamp('checked_at')->nullable();
             $table->timestamps();

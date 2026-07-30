@@ -23,6 +23,11 @@ class Project extends Model
 
     protected $guarded = [];
 
+    protected $attributes = [
+        'health' => ProjectHealth::Dobre->value,
+    ];
+
+    // logAll(): pri pridaní citlivého stĺpca do modelu prehodnoť explicitný logOnly([...])
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()->logAll()->logOnlyDirty();
@@ -52,6 +57,36 @@ class Project extends Model
     public function gates(): HasMany
     {
         return $this->hasMany(Gate::class);
+    }
+
+    public function documents(): HasMany
+    {
+        return $this->hasMany(Document::class);
+    }
+
+    public function tasks(): HasMany
+    {
+        return $this->hasMany(ProjectTask::class);
+    }
+
+    public function risks(): HasMany
+    {
+        return $this->hasMany(Risk::class);
+    }
+
+    public function questions(): HasMany
+    {
+        return $this->hasMany(Question::class);
+    }
+
+    public function decisions(): HasMany
+    {
+        return $this->hasMany(Decision::class);
+    }
+
+    public function discrepancies(): HasMany
+    {
+        return $this->hasMany(Discrepancy::class);
     }
 
     public function advancePhase(User $by): void

@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\DiscrepancyStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -16,7 +17,7 @@ return new class extends Migration
             $table->foreignId('project_id')->constrained()->cascadeOnDelete();
             $table->string('title');
             $table->text('description');
-            $table->string('status')->default('otvoreny');
+            $table->string('status')->default(DiscrepancyStatus::Otvoreny->value);
             $table->foreignId('assignee_id')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
         });

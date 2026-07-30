@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\AiSuggestionStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,7 +19,7 @@ return new class extends Migration
             $table->nullableMorphs('suggestable');
             $table->text('input_summary')->nullable();
             $table->json('payload');
-            $table->string('status')->default('navrhnute');
+            $table->string('status')->default(AiSuggestionStatus::Navrhnute->value);
             $table->foreignId('reviewed_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamp('reviewed_at')->nullable();
             $table->timestamps();

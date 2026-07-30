@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\RiskStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -19,7 +20,7 @@ return new class extends Migration
             $table->string('impact');
             $table->string('likelihood');
             $table->text('mitigation')->nullable();
-            $table->string('status')->default('otvorene');
+            $table->string('status')->default(RiskStatus::Otvorene->value);
             $table->timestamps();
         });
     }
