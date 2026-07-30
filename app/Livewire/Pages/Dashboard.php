@@ -6,8 +6,8 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-#[Layout('layouts.eurofund')]
-#[Title('Dashboard — EUROFUND OS')]
+#[Layout('layouts.eurofond')]
+#[Title('Dashboard — EUROFOND OS')]
 class Dashboard extends Component
 {
     public function render()

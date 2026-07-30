@@ -11,7 +11,7 @@ class LayoutLogout extends Component
     {
         $logout();
 
-        $this->redirect('/', navigate: false);
+        $this->redirect('/login', navigate: false);
     }
 
     public function render()

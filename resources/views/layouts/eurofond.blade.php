@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $title ?? 'EUROFUND OS' }}</title>
+    <title>{{ $title ?? 'EUROFOND OS' }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-gray-100 font-sans antialiased text-gray-900">
@@ -11,7 +11,7 @@
     <aside class="flex w-60 shrink-0 flex-col border-r border-gray-200 bg-white">
         <div class="flex items-center gap-2 px-5 py-5">
             <span class="grid h-8 w-8 place-items-center rounded-lg bg-blue-600 text-sm font-bold text-white">E</span>
-            <span class="text-lg font-bold tracking-tight">EUROFUND OS</span>
+            <span class="text-lg font-bold tracking-tight">EUROFOND OS</span>
         </div>
         <nav class="flex-1 space-y-1 px-3">
             @php
@@ -36,9 +36,12 @@
                 ];
             @endphp
             @foreach ($sections as [$label, $routeName])
+                @php
+                    $activePattern = str_contains($routeName, '.') ? explode('.', $routeName)[0].'.*' : $routeName;
+                @endphp
                 <a href="{{ route($routeName) }}"
                    class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium
-                          {{ request()->routeIs($routeName.'*') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
+                          {{ request()->routeIs($activePattern) ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
                     <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                         <path d="{{ $icons[$routeName] }}" />
                     </svg>
@@ -46,7 +49,7 @@
                     @if ($routeName === 'inbox')
                         @php $noveCount = \App\Models\InboxItem::where('status', \App\Enums\InboxItemStatus::Nove)->count(); @endphp
                         @if ($noveCount > 0)
-                            <span class="rounded-full px-2 text-xs font-semibold {{ request()->routeIs('inbox*') ? 'bg-white/20 text-white' : 'bg-blue-100 text-blue-700' }}">{{ $noveCount }}</span>
+                            <span class="rounded-full px-2 text-xs font-semibold {{ request()->routeIs($activePattern) ? 'bg-white/20 text-white' : 'bg-blue-100 text-blue-700' }}">{{ $noveCount }}</span>
                         @endif
                     @endif
                 </a>

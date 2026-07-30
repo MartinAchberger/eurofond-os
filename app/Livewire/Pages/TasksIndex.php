@@ -6,8 +6,8 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-#[Layout('layouts.eurofund')]
-#[Title('Úlohy — EUROFUND OS')]
+#[Layout('layouts.eurofond')]
+#[Title('Úlohy — EUROFOND OS')]
 class TasksIndex extends Component
 {
     public function render()

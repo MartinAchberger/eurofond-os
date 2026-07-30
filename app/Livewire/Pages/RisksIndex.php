@@ -6,8 +6,8 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-#[Layout('layouts.eurofund')]
-#[Title('Riziká — EUROFUND OS')]
+#[Layout('layouts.eurofond')]
+#[Title('Riziká — EUROFOND OS')]
 class RisksIndex extends Component
 {
     public function render()

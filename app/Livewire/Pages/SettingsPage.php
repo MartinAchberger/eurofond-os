@@ -6,8 +6,8 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-#[Layout('layouts.eurofund')]
-#[Title('Nastavenia — EUROFUND OS')]
+#[Layout('layouts.eurofond')]
+#[Title('Nastavenia — EUROFOND OS')]
 class SettingsPage extends Component
 {
     public function render()

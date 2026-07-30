@@ -6,8 +6,8 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-#[Layout('layouts.eurofund')]
-#[Title('Inbox — EUROFUND OS')]
+#[Layout('layouts.eurofond')]
+#[Title('Inbox — EUROFOND OS')]
 class InboxPage extends Component
 {
     public function render()

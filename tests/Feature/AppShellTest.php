@@ -18,7 +18,7 @@ test('sidebar shows all slovak sections for authenticated user', function () {
     $this->actingAs(User::factory()->create())
         ->get(route('dashboard'))
         ->assertOk()
-        ->assertSeeInOrder(['EUROFUND OS', 'Dashboard', 'Dnes', 'Inbox', 'Projekty', 'Dokumenty', 'Požiadavky', 'Úlohy', 'Riziká', 'Rozhodnutia', 'Nastavenia']);
+        ->assertSeeInOrder(['EUROFOND OS', 'Dashboard', 'Dnes', 'Inbox', 'Projekty', 'Dokumenty', 'Požiadavky', 'Úlohy', 'Riziká', 'Rozhodnutia', 'Nastavenia']);
 });
 
 test('every page route renders', function (string $route) {
@@ -33,4 +33,18 @@ test('project show renders project code', function () {
         ->get(route('projekty.show', $project))
         ->assertOk()
         ->assertSee('PRJ-777');
+});
+
+test('projekty sidebar item stays active on project detail page', function () {
+    $project = Project::factory()->create();
+
+    $html = $this->actingAs(User::factory()->create())
+        ->get(route('projekty.show', $project))
+        ->assertOk()
+        ->getContent();
+
+    preg_match('#<a href="'.preg_quote(route('projekty.index'), '#').'".*?</a>#s', $html, $matches);
+
+    expect($matches)->not->toBeEmpty();
+    expect($matches[0])->toContain('bg-blue-600');
 });

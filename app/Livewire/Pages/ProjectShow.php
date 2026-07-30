@@ -8,8 +8,8 @@ use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 
-#[Layout('layouts.eurofund')]
-#[Title('Projekt — EUROFUND OS')]
+#[Layout('layouts.eurofond')]
+#[Title('Projekt — EUROFOND OS')]
 class ProjectShow extends Component
 {
     public Project $project;

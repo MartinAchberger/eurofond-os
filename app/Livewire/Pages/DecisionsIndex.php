@@ -6,8 +6,8 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-#[Layout('layouts.eurofund')]
-#[Title('Rozhodnutia — EUROFUND OS')]
+#[Layout('layouts.eurofond')]
+#[Title('Rozhodnutia — EUROFOND OS')]
 class DecisionsIndex extends Component
 {
     public function render()
