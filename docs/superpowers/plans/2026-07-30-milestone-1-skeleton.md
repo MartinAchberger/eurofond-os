@@ -735,3 +735,8 @@ git push
 ## After this milestone
 
 Milestone 2 (dashboard + project workspace UI in Livewire), 3 (document upload/archive UX), 4 (process flows), 5 (AI layer via `anthropic-ai/sdk`, model `claude-opus-5`) get their own plans once Milestone 1 is merged and reviewed.
+
+## Deviations
+
+- Actual installed stack is Laravel 13.8 + Orchid 14.53 (plan said Laravel 12 with a fallback to 11 if `orchid/platform` conflicted); the forward-compatible install succeeded and all other constraints in this plan were honored unchanged.
+- spatie/laravel-activitylog installed at v5, whose `Activity` model uses namespaced `Spatie\Activitylog\...` classes and stores attribute diffs on a dedicated `attribute_changes` column (not `properties['attributes']` as in older majors); models use `logAll()` for full-attribute coverage, documented in the Task 10 report.

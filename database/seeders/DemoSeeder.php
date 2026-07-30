@@ -47,7 +47,7 @@ class DemoSeeder extends Seeder
         ]);
 
         $clientGalantskyKastiel = Client::create([
-            'name' => 'Obec Galantský kaštieľ vlastník',
+            'name' => 'Mesto Galanta',
             'type' => 'obec',
         ]);
 
