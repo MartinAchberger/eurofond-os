@@ -9,11 +9,15 @@ use DomainException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\Activitylog\Models\Concerns\LogsActivity;
+use Spatie\Activitylog\Support\LogOptions;
 
 class ProjectTask extends Model
 {
     /** @use HasFactory<ProjectTaskFactory> */
     use HasFactory;
+
+    use LogsActivity;
 
     protected $guarded = [];
 
@@ -21,6 +25,11 @@ class ProjectTask extends Model
         'priority' => 'stredna',
         'status' => 'otvorena',
     ];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()->logAll()->logOnlyDirty();
+    }
 
     protected function casts(): array
     {

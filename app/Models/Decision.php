@@ -6,11 +6,15 @@ use Database\Factories\DecisionFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\Activitylog\Models\Concerns\LogsActivity;
+use Spatie\Activitylog\Support\LogOptions;
 
 class Decision extends Model
 {
     /** @use HasFactory<DecisionFactory> */
     use HasFactory;
+
+    use LogsActivity;
 
     protected $guarded = [];
 
@@ -19,6 +23,11 @@ class Decision extends Model
         return [
             'approved_at' => 'datetime',
         ];
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()->logAll()->logOnlyDirty();
     }
 
     public function project(): BelongsTo

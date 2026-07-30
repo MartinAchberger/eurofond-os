@@ -8,17 +8,26 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\DB;
+use Spatie\Activitylog\Models\Concerns\LogsActivity;
+use Spatie\Activitylog\Support\LogOptions;
 
 class DocumentVersion extends Model
 {
     /** @use HasFactory<DocumentVersionFactory> */
     use HasFactory;
 
+    use LogsActivity;
+
     protected $guarded = [];
 
     protected $attributes = [
         'status' => 'nepotvrdena',
     ];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()->logAll()->logOnlyDirty();
+    }
 
     protected function casts(): array
     {
