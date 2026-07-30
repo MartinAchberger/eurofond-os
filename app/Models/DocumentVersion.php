@@ -59,7 +59,9 @@ class DocumentVersion extends Model
             $this->document->versions()
                 ->where('id', '!=', $this->id)
                 ->where('status', DocumentVersionStatus::Aktualna)
-                ->update(['status' => DocumentVersionStatus::Nahradena]);
+                ->lockForUpdate()
+                ->get()
+                ->each->update(['status' => DocumentVersionStatus::Nahradena]);
 
             $this->update([
                 'status' => DocumentVersionStatus::Aktualna,

@@ -69,6 +69,10 @@ class Project extends Model
             throw new DomainException('Projekt nemôže postúpiť: kontrolná brána neprešla.');
         }
 
+        activity()->causedBy($by)->performedOn($this)
+            ->withProperties(['from' => $this->phase->value, 'gate_id' => $gate->id])
+            ->log('Postup do ďalšej fázy');
+
         $this->update(['phase' => ProjectPhase::from($this->phase->value + 1)]);
     }
 }

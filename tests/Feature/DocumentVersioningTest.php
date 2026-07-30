@@ -29,3 +29,17 @@ test('new versions start as nepotvrdena', function () {
     $v = DocumentVersion::factory()->create();
     expect($v->status)->toBe(DocumentVersionStatus::Nepotvrdena);
 });
+
+test('supersede transition is audit-logged', function () {
+    $user = User::factory()->create();
+    $document = Document::factory()->create();
+    $v1 = DocumentVersion::factory()->for($document)->create();
+    $v2 = DocumentVersion::factory()->for($document)->create();
+    $v1->activate($user);
+    $v2->activate($user);
+
+    expect(\Spatie\Activitylog\Models\Activity::where('subject_type', DocumentVersion::class)
+        ->where('subject_id', $v1->id)
+        ->get()
+        ->contains(fn ($a) => data_get($a->attribute_changes, 'attributes.status') === 'nahradena'))->toBeTrue();
+});

@@ -12,5 +12,6 @@ test('demo seed creates the mockup portfolio', function () {
     expect(User::where('email', 'denis@eurofond.test')->exists())->toBeTrue()
         ->and(Project::count())->toBeGreaterThanOrEqual(4)
         ->and(Project::where('code', 'PRJ-001')->first()->name)->toBe('Malé Hoste')
-        ->and(Project::where('code', 'PRJ-005')->first()->name)->toBe('Hronská Dúbrava');
+        ->and(Project::where('code', 'PRJ-005')->first()->name)->toBe('Hronská Dúbrava')
+        ->and(\Spatie\Activitylog\Models\Activity::count())->toBeGreaterThan(0);
 });
