@@ -12,7 +12,7 @@ enum ProjectHealth: string
     {
         return match ($this) {
             self::Dobre => 'Dobré',
-            self::Stredne => 'Stredne',
+            self::Stredne => 'Stredné',
             self::Riziko => 'Riziko',
         };
     }

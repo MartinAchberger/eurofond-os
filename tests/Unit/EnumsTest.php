@@ -31,7 +31,7 @@ test('project health enum has correct values and labels', function () {
     expect(array_column(ProjectHealth::cases(), 'value'))
         ->toBe(['dobre', 'stredne', 'riziko'])
         ->and(ProjectHealth::Dobre->label())->toBe('Dobré')
-        ->and(ProjectHealth::Stredne->label())->toBe('Stredne')
+        ->and(ProjectHealth::Stredne->label())->toBe('Stredné')
         ->and(ProjectHealth::Riziko->label())->toBe('Riziko');
 });
 
@@ -55,7 +55,8 @@ test('question status enum has correct values', function () {
 test('answer bindingness enum has correct values and labels', function () {
     expect(array_column(AnswerBindingness::cases(), 'value'))
         ->toBe(['zavazne', 'pracovne', 'neformalne'])
-        ->and(AnswerBindingness::Zavazne->label())->toBe('Záväzné');
+        ->and(AnswerBindingness::Zavazne->label())->toBe('Záväzné')
+        ->and(AnswerBindingness::Pracovne->label())->toBe('Pracovné');
 });
 
 test('task priority enum has correct values', function () {
@@ -95,7 +96,8 @@ test('ai suggestion kind enum has correct values and labels', function () {
         ->toBe(['inbox_klasifikacia', 'krizova_kontrola', 'navrh_textu', 'priorizacia'])
         ->and(AiSuggestionKind::InboxKlasifikacia->label())->toBe('Inbox klasifikácia')
         ->and(AiSuggestionKind::KrizovaKontrola->label())->toBe('Krížová kontrola')
-        ->and(AiSuggestionKind::NavrhTextu->label())->toBe('Návrh textu');
+        ->and(AiSuggestionKind::NavrhTextu->label())->toBe('Návrh textu')
+        ->and(AiSuggestionKind::Priorizacia->label())->toBe('Priorizácia');
 });
 
 test('ai suggestion status enum has correct values and labels', function () {

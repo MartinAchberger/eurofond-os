@@ -15,7 +15,7 @@ enum AiSuggestionKind: string
             self::InboxKlasifikacia => 'Inbox klasifikácia',
             self::KrizovaKontrola => 'Krížová kontrola',
             self::NavrhTextu => 'Návrh textu',
-            self::Priorizacia => 'Prioritizácia',
+            self::Priorizacia => 'Priorizácia',
         };
     }
 }

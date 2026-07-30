@@ -12,7 +12,7 @@ enum AnswerBindingness: string
     {
         return match ($this) {
             self::Zavazne => 'Záväzné',
-            self::Pracovne => 'Pracovne',
+            self::Pracovne => 'Pracovné',
             self::Neformalne => 'Neformálne',
         };
     }
