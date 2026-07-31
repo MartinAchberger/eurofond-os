@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DocumentVersionDownloadController;
 use App\Livewire\Pages\Dashboard;
 use App\Livewire\Pages\DecisionsIndex;
 use App\Livewire\Pages\Dnes;
@@ -23,6 +24,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/projekty', ProjectsIndex::class)->name('projekty.index');
     Route::get('/projekty/{project}', ProjectShow::class)->name('projekty.show');
     Route::get('/dokumenty', DocumentsIndex::class)->name('dokumenty.index');
+    Route::get('/dokumenty/verzie/{version}/stiahnut', DocumentVersionDownloadController::class)->name('dokumenty.stiahnut');
     Route::get('/poziadavky', QuestionsIndex::class)->name('poziadavky.index');
     Route::get('/ulohy', TasksIndex::class)->name('ulohy.index');
     Route::get('/rizika', RisksIndex::class)->name('rizika.index');
