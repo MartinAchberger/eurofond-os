@@ -26,6 +26,26 @@ test('authenticated user downloads with original filename', function () {
         ->assertDownload('Projektová dokumentácia v1.2.pdf');
 });
 
+test('control characters in original filename are stripped from Content-Disposition', function () {
+    Storage::fake('local');
+    Storage::disk('local')->put('documents/1/evil.pdf', 'obsah');
+    $version = DocumentVersion::factory()->create([
+        'file_path' => 'documents/1/evil.pdf',
+        'original_filename' => "zla\rverzia\n.pdf",
+    ]);
+
+    $response = $this->actingAs(User::factory()->create())
+        ->get(route('dokumenty.stiahnut', $version))
+        ->assertOk();
+
+    $disposition = $response->headers->get('content-disposition');
+
+    expect($disposition)->not->toBeNull();
+    expect($disposition)->toContain('zlaverzia.pdf');
+    expect($disposition)->not->toContain("\r");
+    expect($disposition)->not->toContain("\n");
+});
+
 test('version without file returns 404', function () {
     $version = DocumentVersion::factory()->create(['file_path' => null]);
     $this->actingAs(User::factory()->create())
