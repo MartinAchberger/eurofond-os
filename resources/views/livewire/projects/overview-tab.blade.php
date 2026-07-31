@@ -23,12 +23,12 @@
             @endforelse
         </div>
         <div class="border-t border-gray-100 px-4 py-3">
-            <span class="inline-flex items-center gap-1 text-sm font-medium text-blue-600">
+            <button type="button" wire:click="$parent.set('tab', 'dokumenty')" class="inline-flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-700">
                 Otvoriť dokumenty
                 <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
-            </span>
+            </button>
         </div>
     </div>
 
@@ -43,7 +43,7 @@
             @forelse ($this->missingEvidence as $task)
                 @php
                     $priorityClasses = match ($task->priority->value) {
-                        'vysoka' => 'bg-red-100 text-red-700',
+                        'blokator', 'vysoka' => 'bg-red-100 text-red-700',
                         'stredna' => 'bg-amber-100 text-amber-700',
                         default => 'bg-gray-100 text-gray-700',
                     };
@@ -59,12 +59,12 @@
             @endforelse
         </div>
         <div class="border-t border-gray-100 px-4 py-3">
-            <span class="inline-flex items-center gap-1 text-sm font-medium text-blue-600">
+            <button type="button" wire:click="$parent.set('tab', 'ulohy')" class="inline-flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-700">
                 Zobraziť všetky
                 <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
-            </span>
+            </button>
         </div>
     </div>
 
@@ -86,12 +86,12 @@
             @endforelse
         </div>
         <div class="border-t border-gray-100 px-4 py-3">
-            <span class="inline-flex items-center gap-1 text-sm font-medium text-blue-600">
+            <button type="button" wire:click="$parent.set('tab', 'poziadavky')" class="inline-flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-700">
                 Zobraziť všetky
                 <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
-            </span>
+            </button>
         </div>
     </div>
 
@@ -129,12 +129,12 @@
             @endif
         </div>
         <div class="border-t border-gray-100 px-4 py-3">
-            <span class="inline-flex items-center gap-1 text-sm font-medium text-blue-600">
+            <button type="button" wire:click="$parent.set('tab', 'fazy')" class="inline-flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-700">
                 Zobraziť brány
                 <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
-            </span>
+            </button>
         </div>
     </div>
 </div>

@@ -70,5 +70,7 @@
         <livewire:projects.risks-tab :project="$project" />
     @elseif ($tab === 'fazy')
         <livewire:projects.phases-tab :project="$project" />
+    @else
+        <livewire:projects.overview-tab :project="$project" />
     @endif
 </div>

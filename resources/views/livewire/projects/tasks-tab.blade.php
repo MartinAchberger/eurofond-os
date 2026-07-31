@@ -26,7 +26,7 @@
                             \App\Enums\TaskStatus::Hotova => 'bg-green-100 text-green-700',
                         };
                         $priorityClasses = fn ($priority) => match ($priority->value) {
-                            'vysoka' => 'bg-red-100 text-red-700',
+                            'blokator', 'vysoka' => 'bg-red-100 text-red-700',
                             'stredna' => 'bg-amber-100 text-amber-700',
                             default => 'bg-gray-100 text-gray-700',
                         };

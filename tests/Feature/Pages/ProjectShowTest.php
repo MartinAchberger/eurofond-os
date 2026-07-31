@@ -35,3 +35,23 @@ test('overview tab shows source of truth, missing evidence, questions and gate',
         ->assertSee('Otvorené otázky')->assertSee('Je rozpočet v súlade s usmernením?')
         ->assertSee('Kontrolná brána')->assertSee('Brána 1 – Screening');
 });
+
+test('overview tab CTAs switch the parent tab', function () {
+    $this->actingAs(User::factory()->create());
+    $project = Project::factory()->create();
+
+    Livewire::test(ProjectShow::class, ['project' => $project])
+        ->assertSeeHtml('wire:click="$parent.set(\'tab\', \'dokumenty\')"')
+        ->assertSeeHtml('wire:click="$parent.set(\'tab\', \'poziadavky\')"')
+        ->assertSeeHtml('wire:click="$parent.set(\'tab\', \'ulohy\')"')
+        ->assertSeeHtml('wire:click="$parent.set(\'tab\', \'fazy\')"');
+});
+
+test('unknown tab query falls back to overview', function () {
+    $this->actingAs(User::factory()->create());
+    $project = Project::factory()->create();
+
+    Livewire::test(ProjectShow::class, ['project' => $project])
+        ->set('tab', 'xyz')
+        ->assertSee('Zdroj pravdy');
+});
