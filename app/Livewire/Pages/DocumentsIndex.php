@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Pages;
 
+use App\Enums\DocumentVersionStatus;
 use App\Models\Document;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
@@ -15,7 +16,7 @@ class DocumentsIndex extends Component
     #[Computed]
     public function documents()
     {
-        return Document::with(['project', 'type', 'versions' => fn ($q) => $q->where('status', \App\Enums\DocumentVersionStatus::Aktualna)])
+        return Document::with(['project', 'type', 'versions' => fn ($q) => $q->where('status', DocumentVersionStatus::Aktualna)])
             ->latest()
             ->get();
     }
