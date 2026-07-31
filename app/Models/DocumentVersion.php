@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\DocumentVersionStatus;
 use Database\Factories\DocumentVersionFactory;
+use DomainException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -36,6 +37,7 @@ class DocumentVersion extends Model
             'status' => DocumentVersionStatus::class,
             'issued_at' => 'date',
             'confirmed_at' => 'datetime',
+            'file_size' => 'integer',
         ];
     }
 
@@ -70,5 +72,18 @@ class DocumentVersion extends Model
                 'confirmed_at' => now(),
             ]);
         });
+    }
+
+    public function archive(User $by): void
+    {
+        if ($this->status === DocumentVersionStatus::Historicka) {
+            throw new DomainException('Verzia je už archivovaná.');
+        }
+
+        $this->update([
+            'status' => DocumentVersionStatus::Historicka,
+            'confirmed_by' => $by->id,
+            'confirmed_at' => now(),
+        ]);
     }
 }
