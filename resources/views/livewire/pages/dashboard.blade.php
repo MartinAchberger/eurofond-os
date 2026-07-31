@@ -1,3 +1,3 @@
-<div>
-    <h1 class="text-2xl font-bold">Dashboard</h1>
+<div class="space-y-6">
+    <livewire:dashboard.stat-cards />
 </div>
