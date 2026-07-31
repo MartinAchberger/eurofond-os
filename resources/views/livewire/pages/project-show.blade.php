@@ -68,7 +68,7 @@
         <livewire:projects.tasks-tab :project="$project" />
     @elseif ($tab === 'rizika')
         <livewire:projects.risks-tab :project="$project" />
-    @else
-        <div class="p-6 text-sm text-gray-500">Pripravujeme…</div>
+    @elseif ($tab === 'fazy')
+        <livewire:projects.phases-tab :project="$project" />
     @endif
 </div>
