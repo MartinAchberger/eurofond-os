@@ -40,3 +40,37 @@ test('invalid priority is rejected', function () {
         ->call('save')
         ->assertHasErrors(['priority']);
 });
+
+test('clearing the due date creates a task with no due date, not today', function () {
+    $this->actingAs(User::factory()->create());
+
+    Livewire::test(CreateTaskModal::class)
+        ->set('title', 'Úloha bez termínu')
+        ->set('dueAt', '')
+        ->call('save')
+        ->assertHasNoErrors();
+
+    expect(ProjectTask::first()->due_at)->toBeNull();
+});
+
+test('close resets stale validation errors from a previous failed save', function () {
+    $this->actingAs(User::factory()->create());
+
+    $component = Livewire::test(CreateTaskModal::class)
+        ->call('save')
+        ->assertHasErrors(['title']);
+
+    $component->call('close')->assertHasNoErrors();
+});
+
+test('empty string project selection coerces to no project, not a validation error', function () {
+    $this->actingAs(User::factory()->create());
+
+    Livewire::test(CreateTaskModal::class)
+        ->set('title', 'Úloha bez projektu')
+        ->set('projectId', '')
+        ->call('save')
+        ->assertHasNoErrors();
+
+    expect(ProjectTask::first()->project_id)->toBeNull();
+});

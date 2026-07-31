@@ -39,6 +39,7 @@ class CreateTaskModal extends Component
     {
         $this->reset('open', 'title', 'projectId', 'assigneeId', 'dueAt', 'note', 'requiredEvidence');
         $this->priority = 'stredna';
+        $this->resetValidation();
     }
 
     public function save(): void
@@ -58,13 +59,14 @@ class CreateTaskModal extends Component
             'project_id' => $validated['projectId'],
             'assignee_id' => $validated['assigneeId'],
             'priority' => $validated['priority'],
-            'due_at' => $validated['dueAt'],
+            'due_at' => $validated['dueAt'] ?: null,
             'note' => $validated['note'] ?: null,
             'required_evidence' => $validated['requiredEvidence'] ?: null,
         ]);
 
         $this->reset('open', 'title', 'projectId', 'assigneeId', 'dueAt', 'note', 'requiredEvidence');
         $this->priority = 'stredna';
+        $this->resetValidation();
         $this->dispatch('task-created');
     }
 
