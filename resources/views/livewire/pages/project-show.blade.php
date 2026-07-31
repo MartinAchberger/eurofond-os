@@ -60,6 +60,12 @@
 
     @if ($tab === 'prehlad')
         <livewire:projects.overview-tab :project="$project" />
+    @elseif ($tab === 'dokumenty')
+        <livewire:projects.documents-tab :project="$project" />
+    @elseif ($tab === 'poziadavky')
+        <livewire:projects.questions-tab :project="$project" />
+    @elseif ($tab === 'rizika')
+        <livewire:projects.risks-tab :project="$project" />
     @else
         <div class="p-6 text-sm text-gray-500">Pripravujeme…</div>
     @endif
