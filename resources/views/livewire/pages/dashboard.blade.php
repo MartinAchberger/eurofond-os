@@ -6,9 +6,11 @@
             <livewire:dashboard.portfolio-table />
         </div>
         <div>
-            {{-- Task 4: Dnešné priority --}}
+            <livewire:dashboard.today-priorities />
         </div>
     </div>
 
     <livewire:dashboard.audit-history />
+
+    <livewire:tasks.create-task-modal />
 </div>
