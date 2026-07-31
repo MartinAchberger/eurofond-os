@@ -64,6 +64,8 @@
         <livewire:projects.documents-tab :project="$project" />
     @elseif ($tab === 'poziadavky')
         <livewire:projects.questions-tab :project="$project" />
+    @elseif ($tab === 'ulohy')
+        <livewire:projects.tasks-tab :project="$project" />
     @elseif ($tab === 'rizika')
         <livewire:projects.risks-tab :project="$project" />
     @else
