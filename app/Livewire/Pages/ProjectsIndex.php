@@ -21,10 +21,12 @@ class ProjectsIndex extends Component
     {
         return Project::with('client')
             ->when($this->q !== '', function ($query) {
+                $q = addcslashes($this->q, '%_\\');
+
                 $query->where(fn ($w) => $w
-                    ->where('code', 'like', "%{$this->q}%")
-                    ->orWhere('name', 'like', "%{$this->q}%")
-                    ->orWhereHas('client', fn ($c) => $c->where('name', 'like', "%{$this->q}%")));
+                    ->where('code', 'like', "%{$q}%")
+                    ->orWhere('name', 'like', "%{$q}%")
+                    ->orWhereHas('client', fn ($c) => $c->where('name', 'like', "%{$q}%")));
             })
             ->orderBy('code')
             ->get();

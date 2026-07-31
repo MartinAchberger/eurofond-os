@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Projects;
 
+use App\Enums\DocumentVersionStatus;
 use App\Models\DocumentVersion;
 use App\Models\Project;
 use DomainException;
@@ -33,6 +34,7 @@ class TasksTab extends Component
     public function evidenceVersions()
     {
         return DocumentVersion::whereHas('document', fn ($q) => $q->where('project_id', $this->project->id))
+            ->whereIn('status', [DocumentVersionStatus::Aktualna, DocumentVersionStatus::Nepotvrdena])
             ->with('document')
             ->get();
     }
@@ -52,6 +54,10 @@ class TasksTab extends Component
 
     public function confirmComplete(): void
     {
+        if ($this->completingTaskId === null) {
+            return;
+        }
+
         $task = $this->project->tasks()->findOrFail($this->completingTaskId);
 
         $version = null;

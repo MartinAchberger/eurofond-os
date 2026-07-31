@@ -15,7 +15,7 @@ class InboxPage extends Component
     #[Computed]
     public function items()
     {
-        return InboxItem::with(['suggestedProject', 'createdBy'])
+        return InboxItem::with('suggestedProject')
             ->latest()
             ->get();
     }

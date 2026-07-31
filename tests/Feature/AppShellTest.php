@@ -6,9 +6,13 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-test('guest is redirected to login from app pages', function () {
-    $this->get(route('dashboard'))->assertRedirect(route('login'));
-});
+test('guest is redirected to login from app pages', function (string $route) {
+    $this->get(route($route))->assertRedirect(route('login'));
+})->with([
+    'dashboard', 'dnes', 'inbox', 'projekty.index', 'dokumenty.index',
+    'poziadavky.index', 'ulohy.index', 'rizika.index', 'rozhodnutia.index',
+    'nastavenia', 'profile',
+]);
 
 test('root redirects to dashboard', function () {
     $this->get('/')->assertRedirect('/dashboard');

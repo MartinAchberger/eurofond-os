@@ -12,8 +12,7 @@ class PortfolioTable extends Component
     #[Computed]
     public function projects()
     {
-        return Project::with('client')
-            ->where('phase', '<', ProjectPhase::Ukoncenie->value)
+        return Project::where('phase', '<', ProjectPhase::Ukoncenie->value)
             ->orderBy('next_deadline')
             ->get();
     }

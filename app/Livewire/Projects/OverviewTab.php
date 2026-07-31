@@ -18,7 +18,7 @@ class OverviewTab extends Component
     public function currentVersions()
     {
         return $this->project->documents()
-            ->with(['type', 'versions' => fn ($q) => $q->where('status', DocumentVersionStatus::Aktualna)])
+            ->with(['versions' => fn ($q) => $q->where('status', DocumentVersionStatus::Aktualna)])
             ->get()
             ->filter(fn ($d) => $d->versions->isNotEmpty());
     }

@@ -22,7 +22,14 @@
                             'updated' => 'Upravené',
                             default => $activity->event,
                         } }}
-                        {{ class_basename($activity->subject_type) }}
+                        {{ match (class_basename($activity->subject_type)) {
+                            'Project' => 'Projekt',
+                            'ProjectTask' => 'Úloha',
+                            'DocumentVersion' => 'Verzia dokumentu',
+                            'Decision' => 'Rozhodnutie',
+                            'Gate' => 'Brána',
+                            default => class_basename($activity->subject_type),
+                        } }}
                         {{ $activity->subject?->code ?? $activity->subject?->title ?? $activity->subject?->name ?? '#'.$activity->subject_id }}
                     </span>
                 </li>

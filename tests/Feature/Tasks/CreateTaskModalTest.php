@@ -74,3 +74,12 @@ test('empty string project selection coerces to no project, not a validation err
 
     expect(ProjectTask::first()->project_id)->toBeNull();
 });
+
+test('open-create-task event opens the modal', function () {
+    $this->actingAs(User::factory()->create());
+
+    Livewire::test(CreateTaskModal::class)
+        ->assertSet('open', false)
+        ->dispatch('open-create-task')
+        ->assertSet('open', true);
+});

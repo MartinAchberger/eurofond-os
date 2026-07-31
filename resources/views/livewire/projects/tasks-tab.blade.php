@@ -32,7 +32,7 @@
                         };
                     @endphp
                     @foreach ($this->tasks as $task)
-                        <tr>
+                        <tr wire:key="task-{{ $task->id }}">
                             <td class="px-5 py-3">
                                 <p class="font-medium text-gray-900">{{ $task->title }}</p>
                                 @if ($task->status === \App\Enums\TaskStatus::Hotova)
@@ -72,7 +72,7 @@
                             </td>
                         </tr>
                         @if ($completingTaskId === $task->id)
-                            <tr>
+                            <tr wire:key="complete-{{ $task->id }}">
                                 <td colspan="6" class="bg-gray-50 px-5 py-4">
                                     <div class="space-y-3">
                                         @if ($task->required_evidence)
@@ -91,7 +91,7 @@
                                                     class="mt-1 w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500">
                                                 <option value="">— Vyberte verziu dokumentu —</option>
                                                 @foreach ($this->evidenceVersions as $version)
-                                                    <option value="{{ $version->id }}">{{ $version->document->title }} — {{ $version->version_label }}</option>
+                                                    <option value="{{ $version->id }}">{{ $version->document->title }} — {{ $version->version_label }} ({{ $version->status->label() }})</option>
                                                 @endforeach
                                             </select>
                                         </div>
