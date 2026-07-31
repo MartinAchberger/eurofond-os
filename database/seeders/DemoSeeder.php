@@ -2,11 +2,15 @@
 
 namespace Database\Seeders;
 
+use App\Enums\InboxItemStatus;
+use App\Enums\InboxSource;
 use App\Models\Client;
+use App\Models\Decision;
 use App\Models\Document;
 use App\Models\DocumentType;
 use App\Models\DocumentVersion;
 use App\Models\Gate;
+use App\Models\InboxItem;
 use App\Models\Project;
 use App\Models\ProjectTask;
 use App\Models\Question;
@@ -61,7 +65,7 @@ class DemoSeeder extends Seeder
             'phase' => 4,
             'status_label' => 'Čaká na PD',
             'health' => 'dobre',
-            'next_deadline' => Carbon::parse('2026-08-28'),
+            'next_deadline' => today()->addDays(4),
             'main_blocker' => 'Čaká sa na doplnenie projektovej dokumentácie.',
             'next_step' => 'Skontrolovať PD a doplniť podklady.',
             'owner_id' => $denis->id,
@@ -77,7 +81,7 @@ class DemoSeeder extends Seeder
             'phase' => 10,
             'status_label' => 'Monitoring',
             'health' => 'dobre',
-            'next_deadline' => Carbon::parse('2026-09-15'),
+            'next_deadline' => today()->addDays(30),
             'main_blocker' => null,
             'next_step' => 'Pripraviť monitorovaciu správu.',
             'owner_id' => $denis->id,
@@ -93,7 +97,7 @@ class DemoSeeder extends Seeder
             'phase' => 9,
             'status_label' => 'Rozpočet / audit',
             'health' => 'stredne',
-            'next_deadline' => Carbon::parse('2026-08-31'),
+            'next_deadline' => today()->addDays(11),
             'main_blocker' => 'Rozpočet vyžaduje audit oprávnenosti výdavkov.',
             'next_step' => 'Vypracovať rozpočtové zdôvodnenie.',
             'owner_id' => $denis->id,
@@ -109,7 +113,7 @@ class DemoSeeder extends Seeder
             'phase' => 5,
             'status_label' => 'Príprava žiadosti',
             'health' => 'dobre',
-            'next_deadline' => Carbon::parse('2026-09-10'),
+            'next_deadline' => today()->addDays(21),
             'main_blocker' => null,
             'next_step' => 'Dokončiť prípravu žiadosti o NFP.',
             'owner_id' => $denis->id,
@@ -118,6 +122,7 @@ class DemoSeeder extends Seeder
         $this->seedMaleHosteDetail($projectMaleHoste, $denis);
         $this->seedHronskaDubravaDetail($projectHronskaDubrava, $denis);
         $this->seedAdditionalTasksAndRisks($projectTornala, $projectGalantskyKastiel, $projectMaleHoste);
+        $this->seedInbox($denis, $projectMaleHoste, $projectTornala, $projectHronskaDubrava, $projectGalantskyKastiel);
     }
 
     private function seedMaleHosteDetail(Project $project, User $denis): void
@@ -164,7 +169,7 @@ class DemoSeeder extends Seeder
         ]);
         $rozpocetV3->activate($denis);
 
-        Question::create([
+        $questionMaleHoste = Question::create([
             'project_id' => $project->id,
             'document_id' => $pdDocument->id,
             'asked_by' => 'Denis',
@@ -181,7 +186,7 @@ class DemoSeeder extends Seeder
             'title' => 'Skontrolovať PD a doplniť podklady',
             'assignee_id' => $denis->id,
             'priority' => 'vysoka',
-            'due_at' => Carbon::parse('2026-08-10'),
+            'due_at' => today()->subDays(3),
             'status' => 'otvorena',
             'required_evidence' => 'Checklist podkladov',
         ]);
@@ -191,7 +196,7 @@ class DemoSeeder extends Seeder
             'title' => 'Zaslať doplnené technické listy obci',
             'assignee_id' => $denis->id,
             'priority' => 'stredna',
-            'due_at' => Carbon::parse('2026-08-15'),
+            'due_at' => today(),
             'status' => 'caka',
             'required_evidence' => 'Potvrdenie o odoslaní',
         ]);
@@ -210,6 +215,16 @@ class DemoSeeder extends Seeder
             'description' => 'Stanovisko VO nie je doložené pre plánovaný rozsah prác.',
             'impact' => 'stredny',
             'likelihood' => 'nizky',
+        ]);
+
+        Decision::create([
+            'project_id' => $project->id,
+            'question_id' => $questionMaleHoste->id,
+            'body' => 'Rozpočet je v súlade s aktualizovaným usmernením poskytovateľa.',
+            'approved_by' => 'Ing. Jana Slušná',
+            'approved_at' => now()->subDays(2),
+            'rationale' => 'Kontrola rozpočtových položiek potvrdila súlad s platným usmernením k oprávnenosti výdavkov.',
+            'recorded_by' => $denis->id,
         ]);
     }
 
@@ -233,7 +248,7 @@ class DemoSeeder extends Seeder
 
         $gate->pass($denis);
 
-        Question::create([
+        $questionEnergHodnotenie = Question::create([
             'project_id' => $project->id,
             'asked_by' => 'Denis',
             'asked_to' => 'Obec Hronská Dúbrava',
@@ -244,7 +259,7 @@ class DemoSeeder extends Seeder
             'created_by' => $denis->id,
         ]);
 
-        Question::create([
+        $questionZmluva = Question::create([
             'project_id' => $project->id,
             'asked_by' => 'Denis',
             'asked_to' => 'Obec Hronská Dúbrava',
@@ -260,7 +275,7 @@ class DemoSeeder extends Seeder
             'title' => 'Vypracovať rozpočtové zdôvodnenie',
             'assignee_id' => $denis->id,
             'priority' => 'vysoka',
-            'due_at' => Carbon::parse('2026-08-20'),
+            'due_at' => today()->addDay(),
             'status' => 'caka',
             'required_evidence' => 'Zdôvodňujúci dokument k rozpočtu',
         ]);
@@ -280,6 +295,26 @@ class DemoSeeder extends Seeder
             'impact' => 'stredny',
             'likelihood' => 'stredny',
         ]);
+
+        Decision::create([
+            'project_id' => $project->id,
+            'question_id' => $questionEnergHodnotenie->id,
+            'body' => 'Energetické hodnotenie je priložené k žiadosti o platbu.',
+            'approved_by' => 'Denis',
+            'approved_at' => now()->subDay(),
+            'rationale' => 'Dokument bol overený a zodpovedá požiadavkám poskytovateľa.',
+            'recorded_by' => $denis->id,
+        ]);
+
+        Decision::create([
+            'project_id' => $project->id,
+            'question_id' => $questionZmluva->id,
+            'body' => 'Rozpočet súhlasí s podpísanou zmluvou o dielo.',
+            'approved_by' => 'Ing. Peter Novák',
+            'approved_at' => now()->subHours(6),
+            'rationale' => 'Porovnanie položiek rozpočtu so zmluvou nepreukázalo žiadny rozdiel.',
+            'recorded_by' => $denis->id,
+        ]);
     }
 
     private function seedAdditionalTasksAndRisks(
@@ -291,7 +326,7 @@ class DemoSeeder extends Seeder
             'project_id' => $projectTornala->id,
             'title' => 'Pripraviť monitorovaciu správu',
             'priority' => 'stredna',
-            'due_at' => Carbon::parse('2026-09-05'),
+            'due_at' => today()->addDays(7),
             'status' => 'caka',
             'required_evidence' => 'Podklady k monitorovaciemu obdobiu',
         ]);
@@ -300,7 +335,7 @@ class DemoSeeder extends Seeder
             'project_id' => $projectGalantskyKastiel->id,
             'title' => 'Podpísať zmluvu o dielo',
             'priority' => 'vysoka',
-            'due_at' => Carbon::parse('2026-09-01'),
+            'due_at' => today()->addDays(12),
             'status' => 'caka',
         ]);
 
@@ -335,5 +370,81 @@ class DemoSeeder extends Seeder
             'impact' => 'stredny',
             'likelihood' => 'stredny',
         ]);
+    }
+
+    private function seedInbox(
+        User $denis,
+        Project $projectMaleHoste,
+        Project $projectTornala,
+        Project $projectHronskaDubrava,
+        Project $projectGalantskyKastiel,
+    ): void {
+        $items = [
+            [
+                'source' => InboxSource::Email,
+                'raw_content' => 'Obec Malé Hoste posiela aktualizovaný rozpočet v prílohe.',
+                'status' => InboxItemStatus::Nove,
+                'unconfirmed' => true,
+                'suggested_project_id' => $projectMaleHoste->id,
+                'suggested_type' => 'rozpocet',
+            ],
+            [
+                'source' => InboxSource::Telefonat,
+                'raw_content' => 'Starostka Tornale volala kvôli termínu monitorovacej správy.',
+                'status' => InboxItemStatus::Nove,
+                'unconfirmed' => true,
+                'suggested_project_id' => $projectTornala->id,
+            ],
+            [
+                'source' => InboxSource::Poznamka,
+                'raw_content' => 'Poznámka z porady: Hronská Dúbrava potrebuje doplniť energetický certifikát.',
+                'status' => InboxItemStatus::Nove,
+                'unconfirmed' => true,
+                'suggested_project_id' => $projectHronskaDubrava->id,
+            ],
+            [
+                'source' => InboxSource::Email,
+                'raw_content' => 'Galantský kaštieľ - dodávateľ žiada predĺženie termínu verejného obstarávania.',
+                'status' => InboxItemStatus::Nove,
+                'unconfirmed' => true,
+                'suggested_project_id' => $projectGalantskyKastiel->id,
+            ],
+            [
+                'source' => InboxSource::Email,
+                'raw_content' => 'Nová výzva na obnovu verejného osvetlenia - treba preveriť oprávnenosť pre Tornaľu.',
+                'status' => InboxItemStatus::Nove,
+                'unconfirmed' => true,
+            ],
+            [
+                'source' => InboxSource::Telefonat,
+                'raw_content' => 'Telefonát od projektanta k PD pre Malé Hoste - žiada spresnenie rozsahu prác.',
+                'status' => InboxItemStatus::Nove,
+                'unconfirmed' => false,
+                'suggested_project_id' => $projectMaleHoste->id,
+            ],
+            [
+                'source' => InboxSource::Poznamka,
+                'raw_content' => 'Interná poznámka: skontrolovať čerpanie rozpočtu pred auditom.',
+                'status' => InboxItemStatus::Klasifikovane,
+                'unconfirmed' => false,
+                'suggested_project_id' => $projectHronskaDubrava->id,
+                'suggested_type' => 'rozpocet',
+            ],
+            [
+                'source' => InboxSource::Email,
+                'raw_content' => 'Potvrdenie prijatia žiadosti o platbu od poskytovateľa.',
+                'status' => InboxItemStatus::Schvalene,
+                'unconfirmed' => false,
+                'suggested_project_id' => $projectTornala->id,
+            ],
+        ];
+
+        foreach ($items as $offset => $item) {
+            InboxItem::create([
+                ...$item,
+                'created_by' => $denis->id,
+                'created_at' => now()->subHours(count($items) - $offset),
+            ]);
+        }
     }
 }
