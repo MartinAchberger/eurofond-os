@@ -5,6 +5,7 @@ use App\Livewire\Pages\DecisionsIndex;
 use App\Livewire\Pages\Dnes;
 use App\Livewire\Pages\DocumentsIndex;
 use App\Livewire\Pages\InboxPage;
+use App\Livewire\Pages\ProfilePage;
 use App\Livewire\Pages\ProjectShow;
 use App\Livewire\Pages\ProjectsIndex;
 use App\Livewire\Pages\QuestionsIndex;
@@ -27,7 +28,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/rizika', RisksIndex::class)->name('rizika.index');
     Route::get('/rozhodnutia', DecisionsIndex::class)->name('rozhodnutia.index');
     Route::get('/nastavenia', SettingsPage::class)->name('nastavenia');
-    Route::view('profile', 'profile')->name('profile');
+    Route::get('/profile', ProfilePage::class)->name('profile');
 });
 
 require __DIR__.'/auth.php';
