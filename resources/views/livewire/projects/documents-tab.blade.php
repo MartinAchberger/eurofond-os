@@ -13,6 +13,12 @@
 
     <livewire:projects.create-document-form :project="$project" />
 
+    @if ($error)
+        <div class="mx-5 mt-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700 ring-1 ring-red-200">
+            {{ $error }}
+        </div>
+    @endif
+
     @if ($this->documents->isEmpty())
         <p class="px-5 py-8 text-center text-sm text-gray-500">Žiadne dokumenty.</p>
     @else
@@ -35,7 +41,7 @@
                                     default => 'bg-gray-100 text-gray-700',
                                 };
                             @endphp
-                            <div class="flex flex-wrap items-center justify-between gap-2 px-3 py-2">
+                            <div wire:key="version-{{ $version->id }}" class="flex flex-wrap items-center justify-between gap-2 px-3 py-2">
                                 <div class="flex items-center gap-2">
                                     <span class="text-sm font-medium text-gray-900">{{ $version->version_label }}</span>
                                     <span class="rounded-md px-2 py-0.5 text-xs font-medium {{ $statusClasses }}">
@@ -48,6 +54,32 @@
                                     @endif
                                     @if ($version->confirmedBy && $version->confirmed_at)
                                         &bull; Potvrdil {{ $version->confirmedBy->name }} dňa {{ $version->confirmed_at->format('j. n. Y') }}
+                                    @endif
+                                    @if ($version->file_size)
+                                        &bull; {{ number_format($version->file_size / 1024, 0, ',', ' ') }} kB
+                                    @endif
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    @if ($version->file_path)
+                                        <a href="{{ route('dokumenty.stiahnut', $version) }}"
+                                           wire:key="download-{{ $version->id }}"
+                                           class="rounded-md border border-gray-200 px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50">
+                                            Stiahnuť
+                                        </a>
+                                    @endif
+                                    @if ($version->status !== \App\Enums\DocumentVersionStatus::Aktualna)
+                                        <button type="button" wire:click="confirmVersion({{ $version->id }})"
+                                                wire:key="confirm-{{ $version->id }}"
+                                                class="rounded-md bg-blue-600 px-2.5 py-1 text-xs font-medium text-white hover:bg-blue-500">
+                                            Potvrdiť ako aktuálnu
+                                        </button>
+                                    @endif
+                                    @if ($version->status !== \App\Enums\DocumentVersionStatus::Historicka)
+                                        <button type="button" wire:click="archiveVersion({{ $version->id }})"
+                                                wire:key="archive-{{ $version->id }}"
+                                                class="rounded-md border border-gray-200 px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50">
+                                            Archivovať
+                                        </button>
                                     @endif
                                 </div>
                             </div>
