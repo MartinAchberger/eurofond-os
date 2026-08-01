@@ -13,6 +13,7 @@
                             <th class="px-5 py-3">Typ</th>
                             <th class="px-5 py-3">Projekt</th>
                             <th class="px-5 py-3">Aktuálna verzia</th>
+                            <th class="px-5 py-3"></th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
@@ -43,6 +44,15 @@
                                         </span>
                                     @else
                                         <span class="text-gray-400">—</span>
+                                    @endif
+                                </td>
+                                <td class="px-5 py-3 text-right">
+                                    @if ($version && $version->file_path)
+                                        <a href="{{ route('dokumenty.stiahnut', $version) }}"
+                                           wire:key="download-{{ $version->id }}"
+                                           class="rounded-md border border-gray-200 px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50">
+                                            Stiahnuť
+                                        </a>
                                     @endif
                                 </td>
                             </tr>

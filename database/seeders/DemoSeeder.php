@@ -18,6 +18,7 @@ use App\Models\Risk;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 class DemoSeeder extends Seeder
 {
@@ -160,12 +161,19 @@ class DemoSeeder extends Seeder
             'title' => 'Rozpočet',
         ]);
 
+        $demoFileContent = 'Demo súbor — Rozpočet v3.0';
+        $demoFilePath = "documents/{$project->id}/demo-rozpocet-v3.txt";
+        Storage::disk('local')->put($demoFilePath, $demoFileContent);
+
         $rozpocetV3 = DocumentVersion::create([
             'document_id' => $rozpocetDocument->id,
             'version_label' => 'v3.0',
             'issued_at' => Carbon::parse('2026-07-25'),
             'author' => 'Ing. Jana Slušná',
             'uploaded_by' => $denis->id,
+            'file_path' => $demoFilePath,
+            'original_filename' => 'Rozpocet_v3.pdf',
+            'file_size' => strlen($demoFileContent),
         ]);
         $rozpocetV3->activate($denis);
 
