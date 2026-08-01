@@ -9,10 +9,12 @@
         </button>
     @else
         <div class="mt-3 rounded-lg border border-gray-200 bg-gray-50 p-4">
+            <form wire:submit="save">
             <div class="grid gap-4 sm:grid-cols-2">
                 <div class="sm:col-span-2">
                     <label for="upload-version-file-{{ $document->id }}" class="mb-1 block text-sm font-medium text-gray-700">Súbor</label>
                     <input type="file" id="upload-version-file-{{ $document->id }}" wire:model="file"
+                           accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg"
                            class="block w-full text-sm text-gray-700 file:mr-3 file:rounded-lg file:border-0 file:bg-blue-600 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-white hover:file:bg-blue-700">
                     <p class="mt-1 text-xs text-gray-500">PDF, Word, Excel alebo obrázok, max. 20 MB</p>
                     <div wire:loading wire:target="file" class="mt-1 text-xs text-gray-500">Nahráva sa…</div>
@@ -46,11 +48,12 @@
                         class="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100">
                     Zrušiť
                 </button>
-                <button type="button" wire:click="save" wire:loading.attr="disabled" wire:target="file,save"
+                <button type="submit" wire:loading.attr="disabled" wire:target="file,save"
                         class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50">
                     Nahrať verziu
                 </button>
             </div>
+            </form>
         </div>
     @endif
 </div>

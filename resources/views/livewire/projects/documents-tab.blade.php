@@ -24,7 +24,7 @@
     @else
         <div class="divide-y divide-gray-100">
             @foreach ($this->documents as $document)
-                <div class="px-5 py-4">
+                <div wire:key="document-{{ $document->id }}" class="px-5 py-4">
                     <div class="flex flex-wrap items-center gap-2">
                         <h3 class="text-sm font-semibold text-gray-900">{{ $document->title }}</h3>
                         @if ($document->type)

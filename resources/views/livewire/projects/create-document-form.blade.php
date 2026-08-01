@@ -1,6 +1,7 @@
 <div>
     @if ($open)
         <div class="border-b border-gray-100 bg-gray-50 px-5 py-4">
+            <form wire:submit="save">
             <div class="grid gap-4 sm:grid-cols-2">
                 <div>
                     <label for="create-document-title" class="mb-1 block text-sm font-medium text-gray-700">Názov dokumentu</label>
@@ -27,11 +28,12 @@
                         class="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100">
                     Zrušiť
                 </button>
-                <button type="button" wire:click="save"
-                        class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
+                <button type="submit" wire:loading.attr="disabled" wire:target="save"
+                        class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50">
                     Vytvoriť dokument
                 </button>
             </div>
+            </form>
         </div>
     @endif
 </div>

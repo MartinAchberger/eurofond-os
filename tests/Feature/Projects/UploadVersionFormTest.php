@@ -29,7 +29,8 @@ test('uploads a file and creates an unconfirmed version', function () {
     expect($version->status)->toBe(DocumentVersionStatus::Nepotvrdena)
         ->and($version->original_filename)->toBe('Rozpocet_v3.xlsx')
         ->and($version->uploaded_by)->toBe($user->id)
-        ->and($version->file_path)->toStartWith('documents/'.$document->project_id.'/');
+        ->and($version->file_path)->toStartWith('documents/'.$document->project_id.'/')
+        ->and($version->file_size)->toBeGreaterThan(0);
     Storage::disk('local')->assertExists($version->file_path);
 });
 

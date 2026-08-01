@@ -27,6 +27,7 @@ class DocumentsTab extends Component
     #[On('version-uploaded')]
     public function refreshDocuments(): void
     {
+        $this->error = null;
         unset($this->documents);
     }
 
