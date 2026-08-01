@@ -55,6 +55,8 @@
                             <p class="px-3 py-4 text-center text-sm text-gray-500">Žiadne verzie.</p>
                         @endforelse
                     </div>
+
+                    <livewire:projects.upload-version-form :document="$document" :key="'upload-'.$document->id" />
                 </div>
             @endforeach
         </div>

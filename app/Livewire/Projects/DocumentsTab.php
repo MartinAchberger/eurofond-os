@@ -20,6 +20,7 @@ class DocumentsTab extends Component
     }
 
     #[On('document-created')]
+    #[On('version-uploaded')]
     public function refreshDocuments(): void
     {
         unset($this->documents);
