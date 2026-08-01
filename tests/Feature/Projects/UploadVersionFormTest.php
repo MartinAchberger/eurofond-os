@@ -43,3 +43,21 @@ test('rejects disallowed file types and missing label', function () {
         ->call('save')
         ->assertHasErrors(['file', 'versionLabel']);
 });
+
+test('accepts a legacy OLE2 .doc file', function () {
+    // Legacy .doc/.xls files are OLE2 compound documents. finfo reports these as
+    // application/x-ole-storage (or application/CDFV2), which the old `mimes` rule had no
+    // mapping for — they'd be rejected purely because of the underlying binary format, even
+    // though the extension is exactly what we accept. This pins that these files upload cleanly.
+    Storage::fake('local');
+    $this->actingAs(User::factory()->create());
+    $document = Document::factory()->create();
+
+    $ole2Bytes = "\xD0\xCF\x11\xE0\xA1\xB1\x1A\xE1".str_repeat("\x00", 512);
+
+    Livewire::test(UploadVersionForm::class, ['document' => $document])
+        ->set('file', UploadedFile::fake()->createWithContent('stara-ziadost.doc', $ole2Bytes))
+        ->set('versionLabel', 'v1.0')
+        ->call('save')
+        ->assertHasNoErrors('file');
+});

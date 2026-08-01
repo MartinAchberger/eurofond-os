@@ -37,7 +37,18 @@ class UploadVersionForm extends Component
     public function save(): void
     {
         $validated = $this->validate([
-            'file' => ['required', 'file', 'max:20480', 'mimes:pdf,doc,docx,xls,xlsx,png,jpg,jpeg'],
+            // `mimes` rejects legacy OLE2-based .doc/.xls files: finfo detects those as
+            // application/x-ole-storage (or application/CDFV2) regardless of extension, which
+            // `mimes` has no mapping for. We validate the extension and the MIME type as two
+            // separate, explicit rules instead, listing every MIME finfo can plausibly report
+            // for our accepted formats (including the legacy OLE2 signatures).
+            'file' => [
+                'required',
+                'file',
+                'max:20480',
+                'extensions:pdf,doc,docx,xls,xlsx,png,jpg,jpeg',
+                'mimetypes:application/pdf,application/msword,application/vnd.ms-excel,application/vnd.ms-office,application/x-ole-storage,application/CDFV2,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,image/png,image/jpeg',
+            ],
             'versionLabel' => ['required', 'string', 'max:50'],
             'issuedAt' => ['nullable', 'date'],
             'author' => ['nullable', 'string', 'max:255'],

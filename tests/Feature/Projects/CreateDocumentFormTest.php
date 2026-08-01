@@ -48,6 +48,19 @@ test('close resets fields, validation, and open state', function () {
         ->assertSet('documentTypeId', null);
 });
 
+test('blank title produces a Slovak validation message', function () {
+    $this->actingAs(User::factory()->create());
+    $project = Project::factory()->create();
+
+    $component = Livewire::test(CreateDocumentForm::class, ['project' => $project])
+        ->call('save');
+
+    $message = $component->instance()->getErrorBag()->first('title');
+
+    expect($message)->toContain('povinné')
+        ->and($message)->toContain('názov');
+});
+
 test('close clears stale validation errors', function () {
     $this->actingAs(User::factory()->create());
     $project = Project::factory()->create();
