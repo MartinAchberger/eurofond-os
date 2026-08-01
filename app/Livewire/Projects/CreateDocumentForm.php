@@ -20,9 +20,15 @@ class CreateDocumentForm extends Component
     public ?int $documentTypeId = null;
 
     #[On('open-create-document')]
-    public function toggle(): void
+    public function open(): void
     {
-        $this->open = ! $this->open;
+        $this->open = true;
+    }
+
+    public function close(): void
+    {
+        $this->reset('open', 'title', 'documentTypeId');
+        $this->resetValidation();
     }
 
     public function save(): void

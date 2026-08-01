@@ -1,6 +1,7 @@
 <div class="rounded-xl bg-white shadow-sm ring-1 ring-gray-200">
     <div class="flex items-center justify-between border-b border-gray-100 px-5 py-4">
         <h2 class="text-base font-semibold text-gray-900">Dokumenty</h2>
+        {{-- Page-global dispatch by design: only one CreateDocumentForm instance exists per workspace page. --}}
         <button type="button" wire:click="$dispatch('open-create-document')"
                 class="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700">
             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

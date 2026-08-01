@@ -23,7 +23,7 @@
             </div>
 
             <div class="mt-4 flex items-center justify-end gap-3">
-                <button type="button" wire:click="toggle"
+                <button type="button" wire:click="close"
                         class="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100">
                     Zrušiť
                 </button>

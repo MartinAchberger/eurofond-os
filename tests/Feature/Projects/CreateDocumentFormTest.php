@@ -27,3 +27,34 @@ test('validates and creates a document for the project', function () {
         ->and(Document::first()->project_id)->toBe($project->id)
         ->and(Document::first()->title)->toBe('Rozpočet stavby');
 });
+
+test('close resets fields, validation, and open state', function () {
+    $this->actingAs(User::factory()->create());
+    $project = Project::factory()->create();
+    $type = DocumentType::factory()->create();
+
+    $component = Livewire::test(CreateDocumentForm::class, ['project' => $project])
+        ->set('open', true)
+        ->set('title', 'X')
+        ->set('documentTypeId', $type->id)
+        ->call('close')
+        ->assertSet('open', false)
+        ->assertSet('title', '')
+        ->assertSet('documentTypeId', null);
+
+    $component->call('open')
+        ->assertSet('open', true)
+        ->assertSet('title', '')
+        ->assertSet('documentTypeId', null);
+});
+
+test('close clears stale validation errors', function () {
+    $this->actingAs(User::factory()->create());
+    $project = Project::factory()->create();
+
+    Livewire::test(CreateDocumentForm::class, ['project' => $project])
+        ->call('save')
+        ->assertHasErrors(['title' => 'required'])
+        ->call('close')
+        ->assertHasNoErrors();
+});
