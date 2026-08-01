@@ -20,10 +20,13 @@ test('authenticated user downloads with original filename', function () {
         'original_filename' => 'Projektová dokumentácia v1.2.pdf',
     ]);
 
-    $this->actingAs(User::factory()->create())
+    $response = $this->actingAs(User::factory()->create())
         ->get(route('dokumenty.stiahnut', $version))
         ->assertOk()
         ->assertDownload('Projektová dokumentácia v1.2.pdf');
+
+    $disposition = $response->headers->get('content-disposition');
+    expect($disposition)->toContain("filename*=UTF-8''");
 });
 
 test('control characters in original filename are stripped from Content-Disposition', function () {
@@ -51,4 +54,50 @@ test('version without file returns 404', function () {
     $this->actingAs(User::factory()->create())
         ->get(route('dokumenty.stiahnut', $version))
         ->assertNotFound();
+});
+
+test('response has hardening headers', function () {
+    Storage::fake('local');
+    Storage::disk('local')->put('documents/1/abc.pdf', 'obsah');
+    $version = DocumentVersion::factory()->create([
+        'file_path' => 'documents/1/abc.pdf',
+        'original_filename' => 'abc.pdf',
+    ]);
+
+    $response = $this->actingAs(User::factory()->create())
+        ->get(route('dokumenty.stiahnut', $version))
+        ->assertOk();
+
+    expect($response->headers->get('x-content-type-options'))->toBe('nosniff');
+    expect($response->headers->get('cache-control'))->toContain('private')
+        ->and($response->headers->get('cache-control'))->toContain('no-store');
+});
+
+test('file_path outside the documents directory is rejected', function () {
+    Storage::fake('local');
+    Storage::disk('local')->put('secrets/passwords.txt', 'obsah');
+    $version = DocumentVersion::factory()->create(['file_path' => 'secrets/passwords.txt']);
+
+    $this->actingAs(User::factory()->create())
+        ->get(route('dokumenty.stiahnut', $version))
+        ->assertNotFound();
+});
+
+// Pins the v1 authorization contract: EUROFOND OS is a single-PM app with no per-project
+// membership/ownership concept yet, so ANY authenticated user may download ANY document
+// version — there's no meaningful boundary to enforce until roles/ownership are introduced.
+// This test must be revisited (and very likely made stricter) once that lands.
+test('any authenticated user can download a version regardless of project ownership', function () {
+    Storage::fake('local');
+    Storage::disk('local')->put('documents/1/abc.pdf', 'obsah');
+    $version = DocumentVersion::factory()->create([
+        'file_path' => 'documents/1/abc.pdf',
+        'original_filename' => 'abc.pdf',
+    ]);
+
+    $unrelatedUser = User::factory()->create();
+
+    $this->actingAs($unrelatedUser)
+        ->get(route('dokumenty.stiahnut', $version))
+        ->assertOk();
 });

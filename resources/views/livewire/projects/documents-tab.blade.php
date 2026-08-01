@@ -53,7 +53,11 @@
                                         {{ $version->issued_at->format('j. n. Y') }}
                                     @endif
                                     @if ($version->confirmedBy && $version->confirmed_at)
-                                        &bull; Potvrdil {{ $version->confirmedBy->name }} dňa {{ $version->confirmed_at->format('j. n. Y') }}
+                                        @if ($version->status === \App\Enums\DocumentVersionStatus::Historicka)
+                                            &bull; Archivoval {{ $version->confirmedBy->name }} dňa {{ $version->confirmed_at->format('j. n. Y') }}
+                                        @else
+                                            &bull; Potvrdil {{ $version->confirmedBy->name }} dňa {{ $version->confirmed_at->format('j. n. Y') }}
+                                        @endif
                                     @endif
                                     @if ($version->file_size)
                                         &bull; {{ number_format($version->file_size / 1024, 0, ',', ' ') }} kB
@@ -71,7 +75,7 @@
                                         <button type="button" wire:click="confirmVersion({{ $version->id }})"
                                                 wire:key="confirm-{{ $version->id }}"
                                                 class="rounded-md bg-blue-600 px-2.5 py-1 text-xs font-medium text-white hover:bg-blue-500">
-                                            Potvrdiť ako aktuálnu
+                                            {{ $version->status === \App\Enums\DocumentVersionStatus::Historicka ? 'Obnoviť ako aktuálnu' : 'Potvrdiť ako aktuálnu' }}
                                         </button>
                                     @endif
                                     @if ($version->status !== \App\Enums\DocumentVersionStatus::Historicka)

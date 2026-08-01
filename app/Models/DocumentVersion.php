@@ -56,6 +56,11 @@ class DocumentVersion extends Model
         return $this->belongsTo(User::class, 'uploaded_by');
     }
 
+    // Re-activating a version currently in Historicka status is a deliberate affordance, not a
+    // bug: per the spec workflow, an archived PD (project document) may need to return to being
+    // the current version — e.g. a superseding revision is later found invalid. There is no
+    // separate "unarchive" action; confirming a historicka version does the same thing as
+    // confirming any other non-current version.
     public function activate(User $by): void
     {
         DB::transaction(function () use ($by) {
