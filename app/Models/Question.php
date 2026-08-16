@@ -4,15 +4,20 @@ namespace App\Models;
 
 use App\Enums\QuestionStatus;
 use Database\Factories\QuestionFactory;
+use DomainException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\Activitylog\Models\Concerns\LogsActivity;
+use Spatie\Activitylog\Support\LogOptions;
 
 class Question extends Model
 {
     /** @use HasFactory<QuestionFactory> */
     use HasFactory;
+
+    use LogsActivity;
 
     protected $guarded = [];
 
@@ -29,6 +34,20 @@ class Question extends Model
         ];
     }
 
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()->logAll()->logOnlyDirty();
+    }
+
+    public function close(): void
+    {
+        if ($this->status === QuestionStatus::Uzavreta) {
+            throw new DomainException('Otázka je už uzavretá.');
+        }
+
+        $this->update(['status' => QuestionStatus::Uzavreta]);
+    }
+
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);
@@ -42,6 +61,11 @@ class Question extends Model
     public function answers(): HasMany
     {
         return $this->hasMany(Answer::class);
+    }
+
+    public function decisions(): HasMany
+    {
+        return $this->hasMany(Decision::class);
     }
 
     public function createdBy(): BelongsTo
