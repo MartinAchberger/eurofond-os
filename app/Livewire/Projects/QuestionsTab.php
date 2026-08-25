@@ -18,7 +18,7 @@ class QuestionsTab extends Component
     public function questions()
     {
         return $this->project->questions()
-            ->with('answers')
+            ->with(['answers', 'decisions'])
             ->latest('asked_at')
             ->get();
     }
@@ -42,6 +42,7 @@ class QuestionsTab extends Component
 
     #[On('question-created')]
     #[On('answer-created')]
+    #[On('decision-created')]
     public function refreshQuestions(): void
     {
         unset($this->questions);

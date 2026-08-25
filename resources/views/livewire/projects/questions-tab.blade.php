@@ -62,6 +62,28 @@
                                     <p class="text-xs text-gray-500">
                                         {{ $answer->answered_by }} &bull; {{ $answer->answered_at->format('j. n. Y') }}
                                     </p>
+                                    <livewire:projects.create-decision-form :answer="$answer" :wire:key="'decision-form-'.$answer->id" />
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+
+                    @if ($question->decisions->isNotEmpty())
+                        <div class="mt-3 space-y-2 border-l-2 border-emerald-100 pl-4">
+                            @foreach ($question->decisions as $decision)
+                                <div>
+                                    <div class="flex flex-wrap items-center gap-2">
+                                        <p class="text-sm text-gray-900">{{ $decision->body }}</p>
+                                        <span class="shrink-0 rounded-md bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-700">
+                                            Rozhodnutie
+                                        </span>
+                                    </div>
+                                    <p class="text-xs text-gray-500">
+                                        {{ $decision->approved_by }} &bull; {{ $decision->approved_at->format('j. n. Y') }}
+                                        @if ($decision->rationale)
+                                            &bull; {{ $decision->rationale }}
+                                        @endif
+                                    </p>
                                 </div>
                             @endforeach
                         </div>

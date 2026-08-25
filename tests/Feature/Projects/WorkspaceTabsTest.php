@@ -51,6 +51,26 @@ test('questions tab embeds the answer form and refreshes on answer-created', fun
         ->assertSee('Nová odpoveď po udalosti.');
 });
 
+test('questions tab shows decisions and refreshes on decision-created', function () {
+    $this->actingAs(User::factory()->create());
+    $project = Project::factory()->create();
+    $question = Question::factory()->for($project)->create();
+    $answer = Answer::factory()->for($question)->create();
+
+    $component = Livewire::test(QuestionsTab::class, ['project' => $project])
+        ->assertSeeLivewire(\App\Livewire\Projects\CreateDecisionForm::class);
+
+    \App\Models\Decision::factory()->create([
+        'project_id' => $project->id,
+        'question_id' => $question->id,
+        'answer_id' => $answer->id,
+        'body' => 'Rozhodnutie po odpovedi.',
+    ]);
+
+    $component->dispatch('decision-created')
+        ->assertSee('Rozhodnutie po odpovedi.');
+});
+
 test('risks tab lists project risks', function () {
     $this->actingAs(User::factory()->create());
     $project = Project::factory()->create();
