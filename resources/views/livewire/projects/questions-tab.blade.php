@@ -4,6 +4,12 @@
         <livewire:projects.create-question-form :project="$project" />
     </div>
 
+    @if ($error)
+        <div class="mx-5 mt-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700 ring-1 ring-red-200">
+            {{ $error }}
+        </div>
+    @endif
+
     @if ($this->questions->isEmpty())
         <p class="px-5 py-8 text-center text-sm text-gray-500">Žiadne požiadavky.</p>
     @else
@@ -19,9 +25,18 @@
                 <div class="px-5 py-4">
                     <div class="flex flex-wrap items-start justify-between gap-2">
                         <p class="text-sm font-medium text-gray-900">{{ $question->body }}</p>
-                        <span class="shrink-0 rounded-md px-2 py-0.5 text-xs font-medium {{ $statusClasses }}">
-                            {{ $question->status->label() }}
-                        </span>
+                        <div class="flex shrink-0 items-center gap-2">
+                            <span class="rounded-md px-2 py-0.5 text-xs font-medium {{ $statusClasses }}">
+                                {{ $question->status->label() }}
+                            </span>
+                            @if ($question->status !== \App\Enums\QuestionStatus::Uzavreta)
+                                <button type="button" wire:click="closeQuestion({{ $question->id }})"
+                                        wire:confirm="Naozaj uzavrieť túto otázku?"
+                                        class="rounded-md px-2 py-0.5 text-xs font-medium text-gray-500 ring-1 ring-gray-200 hover:bg-gray-50 hover:text-gray-700">
+                                    Uzavrieť
+                                </button>
+                            @endif
+                        </div>
                     </div>
                     <p class="mt-1 text-xs text-gray-500">
                         {{ $question->asked_by }} &rarr; {{ $question->asked_to }} &bull; {{ $question->asked_at->format('j. n. Y') }}
