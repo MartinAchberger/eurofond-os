@@ -1,6 +1,7 @@
 <div class="rounded-xl bg-white shadow-sm ring-1 ring-gray-200">
-    <div class="border-b border-gray-100 px-5 py-4">
+    <div class="flex flex-wrap items-center justify-between gap-y-3 border-b border-gray-100 px-5 py-4">
         <h2 class="text-base font-semibold text-gray-900">Požiadavky</h2>
+        <livewire:projects.create-question-form :project="$project" />
     </div>
 
     @if ($this->questions->isEmpty())

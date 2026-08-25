@@ -4,6 +4,7 @@ namespace App\Livewire\Projects;
 
 use App\Models\Project;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class QuestionsTab extends Component
@@ -17,6 +18,12 @@ class QuestionsTab extends Component
             ->with('answers')
             ->latest('asked_at')
             ->get();
+    }
+
+    #[On('question-created')]
+    public function refreshQuestions(): void
+    {
+        unset($this->questions);
     }
 
     public function render()
