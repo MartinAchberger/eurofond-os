@@ -51,6 +51,8 @@
                             @endforeach
                         </div>
                     @endif
+
+                    <livewire:projects.answer-question-form :question="$question" :wire:key="'answer-form-'.$question->id" />
                 </div>
             @endforeach
         </div>

@@ -21,6 +21,7 @@ class QuestionsTab extends Component
     }
 
     #[On('question-created')]
+    #[On('answer-created')]
     public function refreshQuestions(): void
     {
         unset($this->questions);

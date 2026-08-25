@@ -37,6 +37,20 @@ test('questions tab shows answers with bindingness', function () {
         ->assertSee('Záväzné')->assertSee('Zodpovedaná');
 });
 
+test('questions tab embeds the answer form and refreshes on answer-created', function () {
+    $this->actingAs(User::factory()->create());
+    $project = Project::factory()->create();
+    $question = Question::factory()->for($project)->create();
+
+    $component = Livewire::test(QuestionsTab::class, ['project' => $project])
+        ->assertSeeLivewire(\App\Livewire\Projects\AnswerQuestionForm::class);
+
+    Answer::factory()->for($question)->create(['body' => 'Nová odpoveď po udalosti.']);
+
+    $component->dispatch('answer-created')
+        ->assertSee('Nová odpoveď po udalosti.');
+});
+
 test('risks tab lists project risks', function () {
     $this->actingAs(User::factory()->create());
     $project = Project::factory()->create();
