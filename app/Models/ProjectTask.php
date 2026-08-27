@@ -47,6 +47,11 @@ class ProjectTask extends Model
         return $this->belongsTo(Project::class);
     }
 
+    public function answer(): BelongsTo
+    {
+        return $this->belongsTo(Answer::class);
+    }
+
     public function assignee(): BelongsTo
     {
         return $this->belongsTo(User::class, 'assignee_id');

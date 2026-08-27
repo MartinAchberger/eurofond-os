@@ -7,6 +7,7 @@ use App\Models\DocumentVersion;
 use App\Models\Project;
 use DomainException;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class TasksTab extends Component
@@ -25,9 +26,15 @@ class TasksTab extends Component
     public function tasks()
     {
         return $this->project->tasks()
-            ->with(['assignee', 'evidenceDocumentVersion.document'])
+            ->with(['assignee', 'evidenceDocumentVersion.document', 'answer.question'])
             ->latest()
             ->get();
+    }
+
+    #[On('task-created')]
+    public function refreshTasks(): void
+    {
+        unset($this->tasks);
     }
 
     #[Computed]

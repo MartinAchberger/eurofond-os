@@ -63,6 +63,7 @@
                                         {{ $answer->answered_by }} &bull; {{ $answer->answered_at->format('j. n. Y') }}
                                     </p>
                                     <livewire:projects.create-decision-form :answer="$answer" :wire:key="'decision-form-'.$answer->id" />
+                                    <livewire:projects.create-task-from-answer-form :answer="$answer" :wire:key="'task-form-'.$answer->id" />
                                 </div>
                             @endforeach
                         </div>

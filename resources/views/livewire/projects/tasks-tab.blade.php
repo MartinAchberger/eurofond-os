@@ -49,6 +49,9 @@
                                 @elseif ($task->required_evidence)
                                     <p class="text-xs text-gray-500">Požadovaný dôkaz: {{ $task->required_evidence }}</p>
                                 @endif
+                                @if ($task->answer)
+                                    <p class="text-xs text-gray-500">Z odpovede na: {{ $task->answer->question->body }}</p>
+                                @endif
                             </td>
                             <td class="px-5 py-3">
                                 <span class="rounded-md px-2 py-0.5 text-xs font-medium {{ $priorityClasses($task->priority) }}">

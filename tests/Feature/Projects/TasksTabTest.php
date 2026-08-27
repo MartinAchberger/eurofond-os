@@ -8,6 +8,30 @@ use Livewire\Livewire;
 
 uses(RefreshDatabase::class);
 
+test('task created from an answer shows its origin', function () {
+    $this->actingAs(User::factory()->create());
+    $project = Project::factory()->create();
+    $question = \App\Models\Question::factory()->for($project)->create(['body' => 'Je LV aktuálny?']);
+    $answer = \App\Models\Answer::factory()->for($question)->create();
+    ProjectTask::factory()->for($project)->create(['title' => 'Vyžiadať výpis', 'answer_id' => $answer->id]);
+
+    Livewire::test(TasksTab::class, ['project' => $project])
+        ->assertSee('Vyžiadať výpis')
+        ->assertSee('Z odpovede na: Je LV aktuálny?');
+});
+
+test('tasks tab refreshes on task-created', function () {
+    $this->actingAs(User::factory()->create());
+    $project = Project::factory()->create();
+
+    $component = Livewire::test(TasksTab::class, ['project' => $project]);
+
+    ProjectTask::factory()->for($project)->create(['title' => 'Nová úloha po udalosti']);
+
+    $component->dispatch('task-created')
+        ->assertSee('Nová úloha po udalosti');
+});
+
 test('completing a task without evidence shows the domain error', function () {
     $this->actingAs(User::factory()->create());
     $project = Project::factory()->create();
