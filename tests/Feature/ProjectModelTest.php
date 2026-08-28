@@ -59,3 +59,46 @@ test('nextStep is null without unfinished tasks', function () {
 
     expect($project->nextStep())->toBeNull();
 });
+
+test('waitingOn prefers the most pressing open question', function () {
+    $project = Project::factory()->create();
+    \App\Models\Question::factory()->for($project)->create([
+        'asked_to' => 'Stavebný úrad',
+        'due_at' => null,
+    ]);
+    \App\Models\Question::factory()->for($project)->create([
+        'asked_to' => 'Obec Malé Hoste',
+        'due_at' => today()->subDay(),
+    ]);
+    $answered = \App\Models\Question::factory()->for($project)->create(['asked_to' => 'Projektant']);
+    \App\Models\Answer::factory()->for($answered)->create();
+
+    $waiting = $project->waitingOn();
+
+    expect($waiting['type'])->toBe('odpoved')
+        ->and($waiting['label'])->toBe('Odpoveď od Obec Malé Hoste')
+        ->and($waiting['overdue'])->toBeTrue();
+});
+
+test('waitingOn falls back to an unconfirmed document version', function () {
+    $project = Project::factory()->create();
+    $document = \App\Models\Document::factory()->for($project)->create(['title' => 'Projektová dokumentácia']);
+    \App\Models\DocumentVersion::factory()->for($document)->create([
+        'version_label' => 'v2.0',
+        'status' => \App\Enums\DocumentVersionStatus::Nepotvrdena,
+    ]);
+
+    $waiting = $project->waitingOn();
+
+    expect($waiting['type'])->toBe('dokument')
+        ->and($waiting['label'])->toBe('Potvrdenie: Projektová dokumentácia — v2.0')
+        ->and($waiting['overdue'])->toBeFalse();
+});
+
+test('waitingOn is null when nothing is pending', function () {
+    $project = Project::factory()->create();
+    $answered = \App\Models\Question::factory()->for($project)->create();
+    \App\Models\Answer::factory()->for($answered)->create();
+
+    expect($project->waitingOn())->toBeNull();
+});

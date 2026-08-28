@@ -44,3 +44,13 @@ test('portfolio shows the next step for each project', function () {
         ->assertSee('Najbližší krok')
         ->assertSee('Doložiť list vlastníctva');
 });
+
+test('portfolio shows what each project waits on', function () {
+    $this->actingAs(\App\Models\User::factory()->create());
+    $project = \App\Models\Project::factory()->create();
+    \App\Models\Question::factory()->for($project)->create(['asked_to' => 'Obec Malé Hoste']);
+
+    Livewire::test(PortfolioTable::class)
+        ->assertSee('Čaká na')
+        ->assertSee('Odpoveď od Obec Malé Hoste');
+});

@@ -21,6 +21,12 @@ class OverviewTab extends Component
     }
 
     #[Computed]
+    public function waitingOn()
+    {
+        return $this->project->waitingOn();
+    }
+
+    #[Computed]
     public function currentVersions()
     {
         return $this->project->documents()

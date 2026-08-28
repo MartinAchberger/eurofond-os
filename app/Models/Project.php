@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use App\Enums\DocumentVersionStatus;
 use App\Enums\GateStatus;
 use App\Enums\ProjectHealth;
 use App\Enums\ProjectPhase;
+use App\Enums\QuestionStatus;
 use App\Enums\TaskStatus;
 use Database\Factories\ProjectFactory;
 use DomainException;
@@ -76,6 +78,45 @@ class Project extends Model
             ->where('status', '!=', TaskStatus::Hotova)
             ->orderByUrgency()
             ->first();
+    }
+
+    /**
+     * @return array{type: string, label: string, detail: string, overdue: bool}|null
+     */
+    public function waitingOn(): ?array
+    {
+        $question = $this->questions()
+            ->where('status', QuestionStatus::Otvorena)
+            ->orderByRaw('CASE WHEN due_at IS NULL THEN 1 ELSE 0 END')
+            ->orderBy('due_at')
+            ->oldest('asked_at')
+            ->first();
+
+        if ($question) {
+            return [
+                'type' => 'odpoved',
+                'label' => 'Odpoveď od '.$question->asked_to,
+                'detail' => $question->body,
+                'overdue' => $question->isOverdue(),
+            ];
+        }
+
+        $version = DocumentVersion::whereHas('document', fn ($q) => $q->where('project_id', $this->id))
+            ->where('status', DocumentVersionStatus::Nepotvrdena)
+            ->with('document')
+            ->oldest()
+            ->first();
+
+        if ($version) {
+            return [
+                'type' => 'dokument',
+                'label' => 'Potvrdenie: '.$version->document->title.' — '.$version->version_label,
+                'detail' => $version->document->title,
+                'overdue' => false,
+            ];
+        }
+
+        return null;
     }
 
     public function risks(): HasMany

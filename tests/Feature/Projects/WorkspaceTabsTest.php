@@ -127,3 +127,13 @@ test('answered question past deadline is not marked overdue', function () {
         ->assertSee('Termín na odpoveď')
         ->assertDontSee('Po termíne');
 });
+
+test('overview tab shows what the project waits on', function () {
+    $this->actingAs(User::factory()->create());
+    $project = Project::factory()->create();
+    Question::factory()->for($project)->create(['asked_to' => 'Stavebný úrad']);
+
+    Livewire::test(\App\Livewire\Projects\OverviewTab::class, ['project' => $project])
+        ->assertSee('Čaká na')
+        ->assertSee('Odpoveď od Stavebný úrad');
+});

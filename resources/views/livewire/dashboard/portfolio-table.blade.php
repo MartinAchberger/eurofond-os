@@ -22,6 +22,7 @@
                         <th class="px-5 py-3">Status</th>
                         <th class="px-5 py-3">Fáza</th>
                         <th class="px-5 py-3">Najbližší krok</th>
+                        <th class="px-5 py-3">Čaká na</th>
                         <th class="px-5 py-3">Blížiaci sa termín</th>
                         <th class="px-5 py-3">Zdravie</th>
                     </tr>
@@ -52,6 +53,18 @@
                                     ])>{{ $nextStep->title }}</span>
                                     @if ($nextStep->priority === \App\Enums\TaskPriority::Blokator)
                                         <span class="ml-1 rounded-md bg-red-100 px-1.5 py-0.5 text-xs font-medium text-red-700">Blokátor</span>
+                                    @endif
+                                @else
+                                    <span class="text-gray-400">—</span>
+                                @endif
+                            </td>
+                            <td class="px-5 py-3">
+                                @php $waiting = $project->waitingOn(); @endphp
+                                @if ($waiting)
+                                    <span @class(['text-gray-700', 'font-medium text-red-600' => $waiting['overdue']])
+                                          title="{{ $waiting['detail'] }}">{{ $waiting['label'] }}</span>
+                                    @if ($waiting['overdue'])
+                                        <span class="ml-1 rounded-md bg-red-100 px-1.5 py-0.5 text-xs font-medium text-red-700">Po termíne</span>
                                     @endif
                                 @else
                                     <span class="text-gray-400">—</span>

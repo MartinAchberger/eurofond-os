@@ -18,6 +18,17 @@
         @else
             <span class="text-sm text-gray-500">Žiadna otvorená úloha.</span>
         @endif
+
+        @if ($this->waitingOn)
+            <span class="ml-auto flex flex-wrap items-center gap-2">
+                <span class="text-sm font-semibold text-gray-900">Čaká na</span>
+                <span @class(['text-sm text-gray-700', 'font-medium text-red-600' => $this->waitingOn['overdue']])
+                      title="{{ $this->waitingOn['detail'] }}">{{ $this->waitingOn['label'] }}</span>
+                @if ($this->waitingOn['overdue'])
+                    <span class="rounded-md bg-red-100 px-1.5 py-0.5 text-xs font-medium text-red-700">Po termíne</span>
+                @endif
+            </span>
+        @endif
     </div>
 
     <div class="flex flex-col rounded-xl bg-white shadow-sm ring-1 ring-gray-200">
