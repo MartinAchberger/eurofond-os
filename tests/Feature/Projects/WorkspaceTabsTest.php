@@ -100,3 +100,30 @@ test('overview tab next step banner without tasks shows placeholder', function (
     Livewire::test(\App\Livewire\Projects\OverviewTab::class, ['project' => $project])
         ->assertSee('Žiadna otvorená úloha');
 });
+
+test('questions tab shows the response deadline and overdue marker', function () {
+    $this->actingAs(User::factory()->create());
+    $project = Project::factory()->create();
+    Question::factory()->for($project)->create([
+        'body' => 'Zmeškaná otázka?',
+        'due_at' => today()->subDays(2),
+    ]);
+
+    Livewire::test(QuestionsTab::class, ['project' => $project])
+        ->assertSee('Termín na odpoveď')
+        ->assertSee('Po termíne');
+});
+
+test('answered question past deadline is not marked overdue', function () {
+    $this->actingAs(User::factory()->create());
+    $project = Project::factory()->create();
+    $question = Question::factory()->for($project)->create([
+        'body' => 'Zodpovedaná po termíne?',
+        'due_at' => today()->subDays(2),
+    ]);
+    Answer::factory()->for($question)->create();
+
+    Livewire::test(QuestionsTab::class, ['project' => $project])
+        ->assertSee('Termín na odpoveď')
+        ->assertDontSee('Po termíne');
+});

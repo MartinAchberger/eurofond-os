@@ -118,3 +118,30 @@ test('tasks are ordered by urgency: open blockers first, done last', function ()
             'Hotový blokátor',
         ]);
 });
+
+test('overdue open task is marked po termine', function () {
+    $this->actingAs(User::factory()->create());
+    $project = Project::factory()->create();
+    ProjectTask::factory()->for($project)->create([
+        'title' => 'Zmeškaná úloha',
+        'due_at' => today()->subDays(3),
+    ]);
+
+    Livewire::test(TasksTab::class, ['project' => $project])
+        ->assertSee('Po termíne');
+});
+
+test('completed task past due date is not marked po termine', function () {
+    $this->actingAs(User::factory()->create());
+    $project = Project::factory()->create();
+    ProjectTask::factory()->for($project)->create([
+        'title' => 'Hotová po termíne',
+        'due_at' => today()->subDays(3),
+        'status' => TaskStatus::Hotova,
+        'evidence_note' => 'x',
+        'completed_at' => now(),
+    ]);
+
+    Livewire::test(TasksTab::class, ['project' => $project])
+        ->assertDontSee('Po termíne');
+});

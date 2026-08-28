@@ -58,7 +58,12 @@
                                     {{ $task->priority->label() }}
                                 </span>
                             </td>
-                            <td class="px-5 py-3 text-gray-700">{{ $task->due_at?->format('j. n. Y') ?? '—' }}</td>
+                            <td @class(['px-5 py-3', 'text-red-600' => $task->isOverdue(), 'text-gray-700' => ! $task->isOverdue()])>
+                                {{ $task->due_at?->format('j. n. Y') ?? '—' }}
+                                @if ($task->isOverdue())
+                                    <span class="ml-1 rounded-md bg-red-100 px-1.5 py-0.5 text-xs font-medium text-red-700">Po termíne</span>
+                                @endif
+                            </td>
                             <td class="px-5 py-3 text-gray-700">{{ $task->assignee?->name ?? '—' }}</td>
                             <td class="px-5 py-3">
                                 <span class="rounded-md px-2 py-0.5 text-xs font-medium {{ $statusClasses($task->status) }}">

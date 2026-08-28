@@ -39,6 +39,13 @@ class Question extends Model
         return LogOptions::defaults()->logAll()->logOnlyDirty();
     }
 
+    public function isOverdue(): bool
+    {
+        return $this->due_at !== null
+            && $this->due_at->lt(today())
+            && $this->status === QuestionStatus::Otvorena;
+    }
+
     public function close(): void
     {
         if ($this->status === QuestionStatus::Uzavreta) {

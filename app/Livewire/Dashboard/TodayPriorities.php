@@ -23,6 +23,7 @@ class TodayPriorities extends Component
     public function dueLabel(ProjectTask $task): string
     {
         return match (true) {
+            $task->isOverdue() => 'Po termíne',
             $task->due_at->isToday() => 'Dnes',
             $task->due_at->isTomorrow() => 'Zajtra',
             default => $task->due_at->format('j. n. Y'),

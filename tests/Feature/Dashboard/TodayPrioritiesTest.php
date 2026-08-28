@@ -19,3 +19,15 @@ test('priorities list open tasks by due date with Dnes/Zajtra labels', function 
         ->assertSee('Dnes')->assertSee('Zajtra')
         ->assertDontSee('Hotová vec');
 });
+
+test('overdue task shows po termine label', function () {
+    $this->actingAs(\App\Models\User::factory()->create());
+    \App\Models\ProjectTask::factory()->create([
+        'title' => 'Zmeškaná priorita',
+        'due_at' => today()->subDay(),
+    ]);
+
+    Livewire::test(TodayPriorities::class)
+        ->assertSee('Zmeškaná priorita')
+        ->assertSee('Po termíne');
+});

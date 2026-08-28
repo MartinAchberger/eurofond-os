@@ -40,6 +40,12 @@
                     </div>
                     <p class="mt-1 text-xs text-gray-500">
                         {{ $question->asked_by }} &rarr; {{ $question->asked_to }} &bull; {{ $question->asked_at->format('j. n. Y') }}
+                        @if ($question->due_at)
+                            &bull; Termín na odpoveď: <span @class(['font-medium text-red-600' => $question->isOverdue()])>{{ $question->due_at->format('j. n. Y') }}</span>
+                            @if ($question->isOverdue())
+                                <span class="rounded-md bg-red-100 px-1.5 py-0.5 font-medium text-red-700">Po termíne</span>
+                            @endif
+                        @endif
                     </p>
 
                     @if ($question->answers->isNotEmpty())

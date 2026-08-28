@@ -48,6 +48,13 @@ class ProjectTask extends Model
         return $this->belongsTo(Project::class);
     }
 
+    public function isOverdue(): bool
+    {
+        return $this->due_at !== null
+            && $this->due_at->lt(today())
+            && $this->status !== TaskStatus::Hotova;
+    }
+
     public function scopeOrderByUrgency(Builder $query): Builder
     {
         return $query
