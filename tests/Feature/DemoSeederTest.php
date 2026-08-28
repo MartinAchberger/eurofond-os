@@ -22,3 +22,26 @@ test('demo seed creates the mockup portfolio', function () {
         ->and(ProjectTask::where('due_at', '<', today())->exists())->toBeTrue()
         ->and(Project::whereBetween('next_deadline', [today(), today()->addDays(14)])->count())->toBeGreaterThanOrEqual(2);
 });
+
+test('demo seed covers the full question lifecycle', function () {
+    $this->seed();
+
+    expect(\App\Models\Answer::count())->toBeGreaterThanOrEqual(2)
+        ->and(\App\Models\Answer::where('bindingness', \App\Enums\AnswerBindingness::Zavazne)->exists())->toBeTrue()
+        ->and(Decision::whereNotNull('answer_id')->exists())->toBeTrue()
+        ->and(ProjectTask::whereNotNull('answer_id')->exists())->toBeTrue()
+        ->and(\App\Models\Question::where('status', \App\Enums\QuestionStatus::Zodpovedana)->exists())->toBeTrue()
+        ->and(\App\Models\Question::where('status', \App\Enums\QuestionStatus::Uzavreta)->exists())->toBeTrue();
+});
+
+test('demo seed shows waiting-on and gate checklist states', function () {
+    $this->seed();
+
+    $maleHoste = Project::where('code', 'PRJ-001')->first();
+    $hronskaDubrava = Project::where('code', 'PRJ-005')->first();
+
+    expect($maleHoste->waitingOn()['type'])->toBe('odpoved')
+        ->and($maleHoste->waitingOn()['overdue'])->toBeTrue()
+        ->and($hronskaDubrava->waitingOn()['type'])->toBe('dokument')
+        ->and(\App\Models\GateItem::where('is_met', false)->exists())->toBeTrue();
+});

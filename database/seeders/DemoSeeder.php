@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Enums\AnswerBindingness;
 use App\Enums\InboxItemStatus;
 use App\Enums\InboxSource;
+use App\Models\Answer;
 use App\Models\Client;
 use App\Models\Decision;
 use App\Models\Document;
@@ -189,6 +191,28 @@ class DemoSeeder extends Seeder
             'created_by' => $denis->id,
         ]);
 
+        $answerMaleHoste = Answer::create([
+            'question_id' => $questionMaleHoste->id,
+            'answered_by' => 'Ing. Jana Slušná, Obec Malé Hoste',
+            'answered_at' => Carbon::parse('2026-08-03 11:15:00'),
+            'body' => 'Rozpočet v3.0 je zostavený podľa platného usmernenia k oprávnenosti výdavkov.',
+            'source' => 'e-mail z 3. 8. 2026',
+            'bindingness' => AnswerBindingness::Zavazne,
+            'recorded_by' => $denis->id,
+        ]);
+
+        Question::create([
+            'project_id' => $project->id,
+            'document_id' => $pdDocument->id,
+            'asked_by' => 'Denis',
+            'asked_to' => 'Obec Malé Hoste',
+            'asked_at' => now()->subDays(6)->setTime(8, 30),
+            'reason' => 'Bez aktualizovanej PD nemožno dokončiť technickú kontrolu.',
+            'body' => 'Kedy obec dodá aktualizovanú projektovú dokumentáciu?',
+            'due_at' => today()->subDays(2),
+            'created_by' => $denis->id,
+        ]);
+
         ProjectTask::create([
             'project_id' => $project->id,
             'title' => 'Skontrolovať PD a doplniť podklady',
@@ -228,11 +252,46 @@ class DemoSeeder extends Seeder
         Decision::create([
             'project_id' => $project->id,
             'question_id' => $questionMaleHoste->id,
+            'answer_id' => $answerMaleHoste->id,
             'body' => 'Rozpočet je v súlade s aktualizovaným usmernením poskytovateľa.',
             'approved_by' => 'Ing. Jana Slušná',
             'approved_at' => now()->subDays(2),
             'rationale' => 'Kontrola rozpočtových položiek potvrdila súlad s platným usmernením k oprávnenosti výdavkov.',
             'recorded_by' => $denis->id,
+        ]);
+
+        ProjectTask::create([
+            'project_id' => $project->id,
+            'answer_id' => $answerMaleHoste->id,
+            'title' => 'Zapracovať potvrdený rozpočet do žiadosti o NFP',
+            'assignee_id' => $denis->id,
+            'priority' => 'stredna',
+            'due_at' => today()->addDays(5),
+            'status' => 'otvorena',
+            'required_evidence' => 'Aktualizovaná príloha žiadosti',
+        ]);
+
+        $questionMaleHoste->refresh()->close();
+
+        $gate = Gate::create([
+            'project_id' => $project->id,
+            'phase' => 4,
+            'name' => 'Brána 2 – Technická a finančná kontrola',
+        ]);
+
+        $gate->items()->create([
+            'label' => 'Rozpočet potvrdený obcou',
+            'is_met' => true,
+        ]);
+
+        $gate->items()->create([
+            'label' => 'Aktualizovaná PD doložená',
+            'is_met' => false,
+        ]);
+
+        $gate->items()->create([
+            'label' => 'List vlastníctva nie starší ako 3 mesiace',
+            'is_met' => false,
         ]);
     }
 
@@ -278,6 +337,42 @@ class DemoSeeder extends Seeder
             'created_by' => $denis->id,
         ]);
 
+        $answerEnerg = Answer::create([
+            'question_id' => $questionEnergHodnotenie->id,
+            'answered_by' => 'Mgr. Eva Krajčíová, Obec Hronská Dúbrava',
+            'answered_at' => Carbon::parse('2026-08-08 09:40:00'),
+            'body' => 'Energetické hodnotenie je súčasťou príloh žiadosti o platbu č. 2.',
+            'source' => 'telefonát, overené v ITMS',
+            'bindingness' => AnswerBindingness::Zavazne,
+            'recorded_by' => $denis->id,
+        ]);
+
+        $answerZmluva = Answer::create([
+            'question_id' => $questionZmluva->id,
+            'answered_by' => 'Ing. Peter Novák',
+            'answered_at' => Carbon::parse('2026-08-11 15:20:00'),
+            'body' => 'Položky rozpočtu zodpovedajú zmluve o dielo vrátane dodatku č. 1.',
+            'source' => 'porovnávacia tabuľka v prílohe e-mailu',
+            'bindingness' => AnswerBindingness::Pracovne,
+            'recorded_by' => $denis->id,
+        ]);
+
+        $zmluvaType = DocumentType::where('slug', 'zmluva')->first() ?? DocumentType::first();
+
+        $zmluvaDocument = Document::create([
+            'project_id' => $project->id,
+            'document_type_id' => $zmluvaType->id,
+            'title' => 'Zmluva o dielo — dodatok č. 1',
+        ]);
+
+        DocumentVersion::create([
+            'document_id' => $zmluvaDocument->id,
+            'version_label' => 'v1.1',
+            'issued_at' => now()->subDays(3),
+            'author' => 'Ing. Peter Novák',
+            'uploaded_by' => $denis->id,
+        ]);
+
         ProjectTask::create([
             'project_id' => $project->id,
             'title' => 'Vypracovať rozpočtové zdôvodnenie',
@@ -307,6 +402,7 @@ class DemoSeeder extends Seeder
         Decision::create([
             'project_id' => $project->id,
             'question_id' => $questionEnergHodnotenie->id,
+            'answer_id' => $answerEnerg->id,
             'body' => 'Energetické hodnotenie je priložené k žiadosti o platbu.',
             'approved_by' => 'Denis',
             'approved_at' => now()->subDay(),
@@ -317,6 +413,7 @@ class DemoSeeder extends Seeder
         Decision::create([
             'project_id' => $project->id,
             'question_id' => $questionZmluva->id,
+            'answer_id' => $answerZmluva->id,
             'body' => 'Rozpočet súhlasí s podpísanou zmluvou o dielo.',
             'approved_by' => 'Ing. Peter Novák',
             'approved_at' => now()->subHours(6),
