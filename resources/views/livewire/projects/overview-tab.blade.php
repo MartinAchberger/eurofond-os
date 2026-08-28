@@ -1,4 +1,25 @@
 <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+    <div class="col-span-full flex flex-wrap items-center gap-3 rounded-xl bg-white px-5 py-4 shadow-sm ring-1 ring-gray-200">
+        <span class="text-sm font-semibold text-gray-900">Najbližší krok</span>
+        @if ($this->nextStep)
+            <span @class([
+                'text-sm text-gray-700',
+                'font-medium text-red-600' => $this->nextStep->priority === \App\Enums\TaskPriority::Blokator,
+            ])>{{ $this->nextStep->title }}</span>
+            @if ($this->nextStep->priority === \App\Enums\TaskPriority::Blokator)
+                <span class="rounded-md bg-red-100 px-1.5 py-0.5 text-xs font-medium text-red-700">Blokátor</span>
+            @endif
+            @if ($this->nextStep->due_at)
+                <span class="text-xs text-gray-500">Termín {{ $this->nextStep->due_at->format('j. n. Y') }}</span>
+            @endif
+            @if ($this->nextStep->assignee)
+                <span class="text-xs text-gray-500">{{ $this->nextStep->assignee->name }}</span>
+            @endif
+        @else
+            <span class="text-sm text-gray-500">Žiadna otvorená úloha.</span>
+        @endif
+    </div>
+
     <div class="flex flex-col rounded-xl bg-white shadow-sm ring-1 ring-gray-200">
         <div class="flex items-center gap-2 border-b border-gray-100 px-4 py-3">
             <svg class="h-4 w-4 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">

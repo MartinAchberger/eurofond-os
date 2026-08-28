@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\GateStatus;
 use App\Enums\ProjectHealth;
 use App\Enums\ProjectPhase;
+use App\Enums\TaskStatus;
 use Database\Factories\ProjectFactory;
 use DomainException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -67,6 +68,14 @@ class Project extends Model
     public function tasks(): HasMany
     {
         return $this->hasMany(ProjectTask::class);
+    }
+
+    public function nextStep(): ?ProjectTask
+    {
+        return $this->tasks()
+            ->where('status', '!=', TaskStatus::Hotova)
+            ->orderByUrgency()
+            ->first();
     }
 
     public function risks(): HasMany

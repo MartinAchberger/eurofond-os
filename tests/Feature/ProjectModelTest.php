@@ -32,3 +32,30 @@ test('project code is unique', function () {
     Project::factory()->create(['code' => 'PRJ-002']);
     Project::factory()->create(['code' => 'PRJ-002']);
 })->throws(QueryException::class);
+
+test('nextStep returns the most urgent unfinished task', function () {
+    $project = Project::factory()->create();
+    \App\Models\ProjectTask::factory()->for($project)->create([
+        'title' => 'Hotový blokátor',
+        'priority' => \App\Enums\TaskPriority::Blokator,
+        'status' => \App\Enums\TaskStatus::Hotova,
+        'completed_at' => now(),
+        'evidence_note' => 'x',
+    ]);
+    \App\Models\ProjectTask::factory()->for($project)->create([
+        'title' => 'Stredná úloha',
+        'priority' => \App\Enums\TaskPriority::Stredna,
+    ]);
+    $urgent = \App\Models\ProjectTask::factory()->for($project)->create([
+        'title' => 'Otvorený blokátor',
+        'priority' => \App\Enums\TaskPriority::Blokator,
+    ]);
+
+    expect($project->nextStep()?->id)->toBe($urgent->id);
+});
+
+test('nextStep is null without unfinished tasks', function () {
+    $project = Project::factory()->create();
+
+    expect($project->nextStep())->toBeNull();
+});

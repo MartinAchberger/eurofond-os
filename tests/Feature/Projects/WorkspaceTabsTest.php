@@ -79,3 +79,24 @@ test('risks tab lists project risks', function () {
     Livewire::test(RisksTab::class, ['project' => $project])
         ->assertSee('Stará PD nesedí s rozpočtom')->assertSee('Vysoký');
 });
+
+test('overview tab shows the next step banner', function () {
+    $this->actingAs(User::factory()->create());
+    $project = Project::factory()->create();
+    \App\Models\ProjectTask::factory()->for($project)->create([
+        'title' => 'Doložiť list vlastníctva',
+        'priority' => \App\Enums\TaskPriority::Blokator,
+    ]);
+
+    Livewire::test(\App\Livewire\Projects\OverviewTab::class, ['project' => $project])
+        ->assertSee('Najbližší krok')
+        ->assertSee('Doložiť list vlastníctva');
+});
+
+test('overview tab next step banner without tasks shows placeholder', function () {
+    $this->actingAs(User::factory()->create());
+    $project = Project::factory()->create();
+
+    Livewire::test(\App\Livewire\Projects\OverviewTab::class, ['project' => $project])
+        ->assertSee('Žiadna otvorená úloha');
+});

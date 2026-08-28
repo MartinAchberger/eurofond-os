@@ -21,6 +21,7 @@
                         <th class="px-5 py-3">Názov projektu</th>
                         <th class="px-5 py-3">Status</th>
                         <th class="px-5 py-3">Fáza</th>
+                        <th class="px-5 py-3">Najbližší krok</th>
                         <th class="px-5 py-3">Blížiaci sa termín</th>
                         <th class="px-5 py-3">Zdravie</th>
                     </tr>
@@ -42,6 +43,20 @@
                                 @endif
                             </td>
                             <td class="px-5 py-3 text-gray-700">{{ $project->phase->label() }}</td>
+                            <td class="px-5 py-3">
+                                @php $nextStep = $project->nextStep(); @endphp
+                                @if ($nextStep)
+                                    <span @class([
+                                        'text-gray-700',
+                                        'font-medium text-red-600' => $nextStep->priority === \App\Enums\TaskPriority::Blokator,
+                                    ])>{{ $nextStep->title }}</span>
+                                    @if ($nextStep->priority === \App\Enums\TaskPriority::Blokator)
+                                        <span class="ml-1 rounded-md bg-red-100 px-1.5 py-0.5 text-xs font-medium text-red-700">Blokátor</span>
+                                    @endif
+                                @else
+                                    <span class="text-gray-400">—</span>
+                                @endif
+                            </td>
                             <td @class([
                                 'px-5 py-3',
                                 'text-red-600 font-medium' => $project->next_deadline?->lte(today()->addDays(7)),

@@ -31,3 +31,16 @@ test('audit history shows recent activity', function () {
 
     Livewire::test(AuditHistory::class)->assertSee('Auditná história');
 });
+
+test('portfolio shows the next step for each project', function () {
+    $this->actingAs(\App\Models\User::factory()->create());
+    $project = \App\Models\Project::factory()->create();
+    \App\Models\ProjectTask::factory()->for($project)->create([
+        'title' => 'Doložiť list vlastníctva',
+        'priority' => \App\Enums\TaskPriority::Blokator,
+    ]);
+
+    Livewire::test(PortfolioTable::class)
+        ->assertSee('Najbližší krok')
+        ->assertSee('Doložiť list vlastníctva');
+});

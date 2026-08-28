@@ -15,6 +15,12 @@ class OverviewTab extends Component
     public Project $project;
 
     #[Computed]
+    public function nextStep()
+    {
+        return $this->project->nextStep();
+    }
+
+    #[Computed]
     public function currentVersions()
     {
         return $this->project->documents()
