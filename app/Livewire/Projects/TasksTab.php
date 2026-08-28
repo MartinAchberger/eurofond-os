@@ -27,7 +27,7 @@ class TasksTab extends Component
     {
         return $this->project->tasks()
             ->with(['assignee', 'evidenceDocumentVersion.document', 'answer.question'])
-            ->latest()
+            ->orderByUrgency()
             ->get();
     }
 

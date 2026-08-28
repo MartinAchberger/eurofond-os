@@ -76,3 +76,45 @@ test('completing with a document version stores the reference', function () {
 
     expect($task->fresh()->evidence_document_version_id)->toBe($version->id);
 });
+
+test('tasks are ordered by urgency: open blockers first, done last', function () {
+    $this->actingAs(User::factory()->create());
+    $project = Project::factory()->create();
+
+    ProjectTask::factory()->for($project)->create([
+        'title' => 'Hotový blokátor',
+        'priority' => \App\Enums\TaskPriority::Blokator,
+        'status' => TaskStatus::Hotova,
+        'evidence_note' => 'x',
+        'completed_at' => now(),
+    ]);
+    ProjectTask::factory()->for($project)->create([
+        'title' => 'Stredná dnes',
+        'priority' => \App\Enums\TaskPriority::Stredna,
+        'due_at' => today(),
+    ]);
+    ProjectTask::factory()->for($project)->create([
+        'title' => 'Vysoká neskôr',
+        'priority' => \App\Enums\TaskPriority::Vysoka,
+        'due_at' => today()->addDays(10),
+    ]);
+    ProjectTask::factory()->for($project)->create([
+        'title' => 'Vysoká skôr',
+        'priority' => \App\Enums\TaskPriority::Vysoka,
+        'due_at' => today()->addDay(),
+    ]);
+    ProjectTask::factory()->for($project)->create([
+        'title' => 'Blokátor bez termínu',
+        'priority' => \App\Enums\TaskPriority::Blokator,
+        'due_at' => null,
+    ]);
+
+    Livewire::test(TasksTab::class, ['project' => $project])
+        ->assertSeeInOrder([
+            'Blokátor bez termínu',
+            'Vysoká skôr',
+            'Vysoká neskôr',
+            'Stredná dnes',
+            'Hotový blokátor',
+        ]);
+});

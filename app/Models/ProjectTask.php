@@ -6,6 +6,7 @@ use App\Enums\TaskPriority;
 use App\Enums\TaskStatus;
 use Database\Factories\ProjectTaskFactory;
 use DomainException;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -45,6 +46,19 @@ class ProjectTask extends Model
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);
+    }
+
+    public function scopeOrderByUrgency(Builder $query): Builder
+    {
+        return $query
+            ->orderByRaw('CASE WHEN status = ? THEN 1 ELSE 0 END', [TaskStatus::Hotova->value])
+            ->orderByRaw(
+                'CASE priority WHEN ? THEN 0 WHEN ? THEN 1 WHEN ? THEN 2 ELSE 3 END',
+                [TaskPriority::Blokator->value, TaskPriority::Vysoka->value, TaskPriority::Stredna->value],
+            )
+            ->orderByRaw('CASE WHEN due_at IS NULL THEN 1 ELSE 0 END')
+            ->orderBy('due_at')
+            ->latest();
     }
 
     public function answer(): BelongsTo
