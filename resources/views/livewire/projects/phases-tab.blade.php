@@ -70,9 +70,18 @@
                                 @if ($gate->items->isNotEmpty())
                                     <ul class="mt-2 space-y-1">
                                         @foreach ($gate->items as $item)
-                                            <li class="flex items-center gap-2 text-xs text-gray-600">
-                                                <span>{{ $item->is_met ? '✓' : '○' }}</span>
-                                                <span>{{ $item->label }}</span>
+                                            <li class="flex items-center gap-2 text-xs text-gray-600" wire:key="gate-item-{{ $item->id }}">
+                                                @if ($gate->status === \App\Enums\GateStatus::Prejdena)
+                                                    <span>{{ $item->is_met ? '✓' : '○' }}</span>
+                                                    <span>{{ $item->label }}</span>
+                                                @else
+                                                    <button type="button" wire:click="toggleItem({{ $item->id }})"
+                                                            class="flex items-center gap-2 text-left hover:text-gray-900"
+                                                            title="{{ $item->is_met ? 'Označiť ako nesplnené' : 'Označiť ako splnené' }}">
+                                                        <span class="{{ $item->is_met ? 'text-emerald-600' : '' }}">{{ $item->is_met ? '✓' : '○' }}</span>
+                                                        <span>{{ $item->label }}</span>
+                                                    </button>
+                                                @endif
                                             </li>
                                         @endforeach
                                     </ul>

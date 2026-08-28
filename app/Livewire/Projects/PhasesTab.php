@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Projects;
 
+use App\Models\GateItem;
 use App\Models\Project;
 use DomainException;
 use Livewire\Attributes\Computed;
@@ -42,6 +43,20 @@ class PhasesTab extends Component
             $gate->pass(auth()->user());
             $this->error = null;
             $this->project->refresh();
+            unset($this->gates);
+        } catch (DomainException $e) {
+            $this->error = $e->getMessage();
+        }
+    }
+
+    public function toggleItem(int $itemId): void
+    {
+        $item = GateItem::whereHas('gate', fn ($q) => $q->where('project_id', $this->project->id))
+            ->findOrFail($itemId);
+
+        try {
+            $item->toggle();
+            $this->error = null;
             unset($this->gates);
         } catch (DomainException $e) {
             $this->error = $e->getMessage();

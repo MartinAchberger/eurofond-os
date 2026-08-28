@@ -51,3 +51,46 @@ test('gate with unmet items cannot pass', function () {
         ->call('passGate', $gate->id)
         ->assertSet('error', 'Brána má nesplnené podmienky.');
 });
+
+test('toggle gate item marks it met and back', function () {
+    $this->actingAs(User::factory()->create());
+    $project = Project::factory()->create();
+    $gate = Gate::factory()->for($project)->create(['phase' => $project->phase->value]);
+    $item = GateItem::factory()->for($gate)->create(['is_met' => false]);
+
+    $component = Livewire::test(PhasesTab::class, ['project' => $project])
+        ->call('toggleItem', $item->id)
+        ->assertSet('error', null);
+
+    expect($item->fresh()->is_met)->toBeTrue();
+
+    $component->call('toggleItem', $item->id);
+
+    expect($item->fresh()->is_met)->toBeFalse();
+});
+
+test('items of a passed gate cannot be toggled', function () {
+    $this->actingAs(User::factory()->create());
+    $project = Project::factory()->create();
+    $gate = Gate::factory()->for($project)->create([
+        'phase' => $project->phase->value,
+        'status' => GateStatus::Prejdena,
+    ]);
+    $item = GateItem::factory()->for($gate)->create(['is_met' => true]);
+
+    Livewire::test(PhasesTab::class, ['project' => $project])
+        ->call('toggleItem', $item->id)
+        ->assertSet('error', 'Prejdená brána sa už nemení.');
+
+    expect($item->fresh()->is_met)->toBeTrue();
+});
+
+test('cannot toggle an item of another projects gate', function () {
+    $this->actingAs(User::factory()->create());
+    $project = Project::factory()->create();
+    $foreignItem = GateItem::factory()->create();
+
+    expect(fn () => Livewire::test(PhasesTab::class, ['project' => $project])
+        ->call('toggleItem', $foreignItem->id))
+        ->toThrow(Illuminate\Database\Eloquent\ModelNotFoundException::class);
+});
